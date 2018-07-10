@@ -83,6 +83,9 @@
     <ClCompile Include="dxgihook.cpp">
       <Filter>hook</Filter>
     </ClCompile>
+    <ClCompile Include="getregvalue.cpp">
+      <Filter>tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="detours">

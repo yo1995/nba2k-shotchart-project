@@ -1,3 +1,4 @@
+#include "hackbase.h"
 #include "trainerbase.h"
 
 std::string GetRegValue(int nKeyType, const std::string& strUrl, const std::string& strKey) {

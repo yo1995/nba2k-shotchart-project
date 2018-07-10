@@ -131,6 +131,7 @@
     <ClCompile Include="..\HackBase\trainergraphic.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\hackbase\messageboxtimeout.h" />
     <ClInclude Include="..\HackBase\minicsv.h" />
     <ClInclude Include="..\HackBase\trainerbase.h" />
   </ItemGroup>

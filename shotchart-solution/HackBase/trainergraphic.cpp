@@ -13,14 +13,14 @@ int score_type = 0;
 int score_judge = 0;
 char* score_type_text = NULL;
 char* score_judge_text = NULL;
-char score_type_0[] = "三不沾";
-char score_type_1[] = "砸框";
-char score_type_2[] = "空刷";
-char score_type_3[] = "打板";
-char score_type_8[] = "弹框出";
-char score_type_other[] = "其它";
-char score_judge_0[] = "没进";
-char score_judge_1[] = "进了";
+char score_type_0[] = "airball";
+char score_type_1[] = "hit the rim";
+char score_type_2[] = "clean shot";
+char score_type_3[] = "bank shot";
+char score_type_8[] = "rim-n-out";
+char score_type_other[] = "others";
+char score_judge_0[] = "missed";
+char score_judge_1[] = "scored";
 
 // F6 start/stop to record data
 char* F6_text = F6_text_f;
@@ -35,14 +35,14 @@ char F7_text_t[] = "F7 GodMode: On";
 
 // is a dunk?
 char* dunk_text = dunk_text_f;
-char dunk_text_t[] = "z Down";
-char dunk_text_f[] = "z Up";
+char dunk_text_t[] = "Is a dunk";
+char dunk_text_f[] = "Not a dunk";
 
 // record mode 
 int record_mode = 1;
 char* record_mode_text = record_mode_text_1;
 char record_mode_text_1[] = "F5: MJ mode";
-char record_mode_text_2[] = "F5: All";
+char record_mode_text_2[] = "F5: All n dash";
 
 // F8 toggle dashboard on/off
 bool made_shot_Z_down = false;
@@ -131,15 +131,16 @@ void onRender_dashboard(Renderer *renderer) {
 	// renderer->DrawBorder(0, 0, 4 * column_width, column_height, border_width, GREEN(255));
 	*/
 	// draw text
-	renderer->DrawTxt(border_width, 1 + border_width, RED(255), F6_text);
-	renderer->DrawTxt(border_width, 1 + border_width + column_height, FontColor_default, F7_text);
-	renderer->DrawTxt(border_width , 1 + border_width + 2 * column_height, FontColor_default, score_type_text);
-	renderer->DrawTxt(border_width + column_width, 1 + border_width + 2 * column_height, FontColor_default, score_judge_text);
+	renderer->DrawTxt(border_width, 1 + border_width, PURPLE(255), record_mode_text);
+	renderer->DrawTxt(border_width, 1 + border_width + column_height, RED(255), F6_text);
+	renderer->DrawTxt(border_width, 1 + border_width + 2 * column_height, ORANGE(255), F7_text);
+	renderer->DrawTxt(border_width , 1 + border_width + 3 * column_height, FontColor_default, score_type_text);
+	renderer->DrawTxt(border_width + column_width, 1 + border_width + 3 * column_height, score_judge ? GREEN(255) : RED(255), score_judge_text);
 	char temp_str[10];
 	sprintf_s(temp_str, "%.2f％", 100 * projected_percent);
-	renderer->DrawTxt(border_width, 1 + border_width + 3 * column_height, FontColor_default, temp_str);
-	renderer->DrawTxt(border_width, 1 + border_width + 4 * column_height, FontColor_default, dunk_text);
-	renderer->DrawTxt(border_width, 1 + border_width + 5 * column_height, FontColor_default, record_mode_text);
+	renderer->DrawTxt(border_width, 1 + border_width + 4 * column_height, FontColor_default, temp_str);
+	renderer->DrawTxt(border_width, 1 + border_width + 5 * column_height, FontColor_default, dunk_text);
+	
 	/* do not need to expose the raw data to regular users.
 	char temp_str[255];
 	sprintf_s(temp_str, "%.2f", coordinate_x_100); //将100转为16进制表示的字符串。
@@ -149,7 +150,7 @@ void onRender_dashboard(Renderer *renderer) {
 	sprintf_s(temp_str, "%.2f", rim_dist);
 	renderer->DrawTxt(border_width + 2 * column_width, column_height + border_width, FontColor_default, temp_str);
 	*/
-	if (clear_screen == no_clear) {
+	if (clear_screen == no_clear && record_mode == 2) {
 		onRender_shotchart(renderer);
 	}
 	return;
@@ -183,10 +184,12 @@ void UpdateBools() {
 	score_judge ? (score_judge_text = score_judge_1) : (score_judge_text = score_judge_0);
 	// 记录数据判断
 	record_shot_chart_and_more ? (F6_text = F6_text_t) : (F6_text = F6_text_f);
-	made_shot_Z_down ? (dunk_text = dunk_text_t) : (dunk_text = dunk_text_f);
+	is_a_dunk ? (dunk_text = dunk_text_t) : (dunk_text = dunk_text_f);
 	record_mode == 1 ? record_mode_text = record_mode_text_1 : record_mode_text = record_mode_text_2;
 	return;
 }
+
+
 // only read from global flags and the render handle for graphic
 void UpdateGraphics(HackBase *mHackBase) {
 	UpdateBools();

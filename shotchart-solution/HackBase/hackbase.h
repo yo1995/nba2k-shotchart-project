@@ -4,10 +4,10 @@
 // #define PUBLISHEDVERSION
 
 // #define LOGTOCONSOLE
-#define LOGTOFILE "C:\\Chen\\log.txt"
+#define LOGTOFILE "C:\\temp\\nba2k11-shotchart.log"
 #define DEBUGLOG
 
-#define COURT_BG "C:\\Chen\\court0.png"
+// #define COURT_BG "C:\\Chen\\court0.png"  // already defined by registry.
 
 #ifdef PUBLISHEDVERSION
 #define LOGTOCONSOLE
@@ -142,18 +142,14 @@ typedef std::vector<String> StringVector;
 
 #pragma region Font defaults
 #define FontSize_default 16
-#define FontFamily_default "Arial"
+#define FontFamily_default "Georgia"
 #define FontColor_default DEEPSKYBLUE(255)
 #define text_alignment_default lefted
 #define FontWeight_default FW_BOLD // FW_NORMAL FW_BOLD
 #pragma endregion
 
-/*
-extern LPDIRECT3DTEXTURE9 Texture_Interface;
-extern LPD3DXSPRITE Sprite_Interface;
-extern LPD3DXLINE mLine;
-extern LPD3DXFONT mFont;
-*/
+// read reg value
+std::string GetRegValue(int nKeyType, const std::string& strUrl, const std::string& strKey);
 
 class HackBase {
 private:

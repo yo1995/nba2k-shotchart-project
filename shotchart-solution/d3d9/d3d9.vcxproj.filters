@@ -47,5 +47,8 @@
     <ClInclude Include="..\HackBase\trainerbase.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\hackbase\messageboxtimeout.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

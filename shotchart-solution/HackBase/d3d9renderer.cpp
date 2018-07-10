@@ -32,8 +32,11 @@ D3D9Renderer::~D3D9Renderer() {
 
 void D3D9Renderer::InitCreateFuncs() {
 	// since the texture is not everchanging, just init once and voila!
-	if (FAILED(D3DXCreateTextureFromFileA(this->pDevice, COURT_BG, &Texture_Interface)))
-		MessageBox(0, "fail D3DXCreateTextureFromFile", "", 0);	// defined in header
+	std::string court_bg_path = GetRegValue(2, "Software\\2K Sports\\NBA 2K11", "InstallDir");
+	court_bg_path = court_bg_path + "court.png";
+	if (FAILED(D3DXCreateTextureFromFileA(this->pDevice, court_bg_path.c_str(), &Texture_Interface)))
+		MessageBox(0, "fail D3DXCreateTextureFromFile, missing registry", "", 0);	// defined in header
+	
 	D3DXCreateSprite(this->pDevice, &Sprite_Interface);
 	D3DXCreateLine(this->pDevice, &mLine); // this one depends on d3dx9.lib which should be deprecated. change in the future?
 	if (FAILED(D3DXCreateFontA(this->pDevice, FontSize_default, 0, FontWeight_default, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontFamily_default, &mFont)))

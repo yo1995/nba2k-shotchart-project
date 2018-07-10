@@ -1,3 +1,6 @@
+
+![preview](/Progress_notes/preview0710.png)
+
 # nba2k-shotchart-project
 
 obtaining game data from nba2k11 to achieve further visualizations.
@@ -10,6 +13,8 @@ This project aims to provide several interesting add-on features for NBA2K11 gam
 NBA2K11 is a basketball video game which was published in late 2010 and ingeniously provided the first ever next-gen Michael Jordan game mode.
 
 The tool specifically designed for the 1.0.1.1 version of the game, and all the memory addresses are obtained with cheatengine corresponding with this specific version. Hence before use please check your game executable “nba2k11.exe” to ensure the compatibility.
+
+![result](/Progress_notes/nba2k11-2018-04-23-19-38-03-56.png)
 
 The tool has multiple features, including:
 
@@ -34,9 +39,9 @@ The tool has multiple features, including:
 
 0. make sure the DirectX libraries are properly configured in your system.
 
-1. put the d3d9.dll under the directory of "nba2k11.exe" executable
+1. put the d3d9.dll and court.png under the directory of "nba2k11.exe" executable; also make sure directory "C:\\temp\\" exists so that d3d hook log file can output
 
-2. run the game, the dashboard will pop up about 8 seconds after the game running.
+2. run the game, the dashboard will pop up about 25-30 seconds after the game running.
 
 3. use previously mentioned F5 F6 F7 and F8 keys to toggle the features.
 
@@ -57,6 +62,8 @@ The tool has multiple features, including:
 - 更新Python绘图代码
 
 - 改进头文件结构，清理无用变量函数
+
+- 整合钩子和修改器代码，汇总为一个项目
 
 ## Keywords
 

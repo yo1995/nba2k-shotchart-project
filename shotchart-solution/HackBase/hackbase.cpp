@@ -149,9 +149,11 @@ bool HackBase::isWindowHooked(String WindowName, String ClassName) {
 	if(!WindowName && !ClassName)
 		return false;
 
-    HWND mWindow = FindWindow(ClassName, WindowName);
-    if(!mWindow)
+    HWND mWindow = FindWindowA(ClassName, WindowName);
+	if (!mWindow) {
 		return false;
+	}
+		
 
 	std::vector<HWND> mWindows = getToplevelWindows();
 

@@ -34,14 +34,29 @@ bool d3d9hijack(HMODULE hModule) {
 }
 
 void init_main() {
-	Sleep(8000);  // a silly way to load my trainer after game itself initialized.
-	char exename[] = "nba2k11.exe"; //GFXTest32.exe nba2k11.exe
-	char windowname[] = "NBA 2K11"; //Renderer: [DirectX9], Input: [Raw input], 32 bits  NBA 2K11
+	Sleep(6000);  // a silly way to load my trainer after game itself initialized.
+	char exename[] = "nba2k11.exe"; 
+	char windowname[] = "NBA 2K11";
+
+	HMODULE hUser32 = LoadLibrary(_T("user32.dll"));
+
+	if (hUser32) {
+		int iRet = 0;
+		UINT uiFlags = MB_OK | MB_SETFOREGROUND | MB_SYSTEMMODAL | MB_ICONINFORMATION;
+		iRet = MessageBoxTimeout(NULL, _T(" Welcomed to use my add-on .\n For more information please visit \n https://github.com/yo1995/nba2k-shotchart-project"),
+			_T("NBA 2K11 shotchart add-on"), uiFlags, 0, 6000);
+		
+	}
+	// MessageBox(0, " Welcomed to use my add-on .\n For more information please visit \n https://github.com/yo1995/nba2k-shotchart-project", "NBA 2K11 shotchart add-on", MB_ICONINFORMATION);
 	mHackBase = HackBase::Singleton();  // new a hackbase to hook d3d
 	if (!mHackBase->Initialize(onRender_clear, exename, windowname)) {
 		MessageBox(0, "Error hooking game. Maybe injected into wrong process...", "Failed to hook...", MB_ICONERROR);
 		return;
 	}
+
+	if (hUser32) FreeLibrary(hUser32);
+
+	// HWND hWnd = GetForegroundWindow();
 	HWND hWnd = FindWindowA(0, windowname);
 	DWORD pid;
 	GetWindowThreadProcessId(hWnd, &pid);
@@ -50,9 +65,15 @@ void init_main() {
 	// https://www.unknowncheats.me/forum/c-and-c-/194439-writeprocessmemory.html
 	HANDLE pHandle_w = OpenProcess(PROCESS_VM_WRITE | PROCESS_VM_OPERATION, false, pid);
 	if (!hWnd || !pid) {
+	
 		MessageBox(0, "Error Finding Window.", "Window mismatch!", MB_ICONERROR);
 		return;
 	}
+	
+
+	Sleep(2000);
+	
+
 	// create a filename class to handle record adata file.
 	mSaveData = new SaveData();
 	int i = 0;  // decrease the time of update, serve as a delay.

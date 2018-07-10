@@ -29,7 +29,6 @@ HRESULT __stdcall hkD3D9EndScene(IDirect3DDevice9 *pDevice) {
 		if(mD3D9Base) {
 			mD3D9Base->setD3DVersion(D3DVersion_D3D9);
 			mD3D9Base->setRenderer(new D3D9Renderer(pDevice));
-			// mD3D9Base->getRenderer()->InitCreateFuncs();
 		}
 	} else {
 		if(mD3D9Base->getRenderer()) {
@@ -59,6 +58,8 @@ LRESULT CALLBACK D3D9MsgProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam){re
 
 D3D9Hook::D3D9Hook() {
 	if(Imports::Singleton()->Direct3DCreate9) {
+		// this hook is not good. especially with fullscrenn games. might change to findpattern method.
+		// will need to odbg to find the pattern.
 		WNDCLASSEXA wc = {sizeof(WNDCLASSEX),CS_CLASSDC,D3D9MsgProc,0L,0L,GetModuleHandleA(NULL),NULL,NULL,NULL,NULL,"DX",NULL};
 		RegisterClassExA(&wc);
 		HWND hWnd = CreateWindowA("DX",NULL,WS_OVERLAPPEDWINDOW,100,100,300,300,GetDesktopWindow(),NULL,wc.hInstance,NULL);

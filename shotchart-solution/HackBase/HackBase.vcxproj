@@ -112,6 +112,7 @@
     <ClCompile Include="detourxs.cpp" />
     <ClCompile Include="dxgihook.cpp" />
     <ClCompile Include="encryption.cpp" />
+    <ClCompile Include="getregvalue.cpp" />
     <ClCompile Include="hackbase.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>

@@ -7,6 +7,12 @@ obtaining game data from nba2k11 to achieve further visualizations.
 
 as Dr. Drew has always said, Everything is a number!
 
+See results in the following links
+
+[Plot for random shootout](https://yo1995.github.io/nba2k-shotchart-project/temp-plot.html)
+
+[Plot for MyPlayer MJ](https://yo1995.github.io/nba2k-shotchart-project/jordan-plot.html)
+
 ## Description
 
 This project aims to provide several interesting add-on features for NBA2K11 game.

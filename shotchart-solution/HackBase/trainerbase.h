@@ -130,6 +130,9 @@ void UpdateGraphics(HackBase *mHackBase);
 
 extern int PTS;
 
+// read reg value
+std::string GetRegValue(int nKeyType, const std::string& strUrl, const std::string& strKey);
+
 // dll hijacking
 typedef void* (WINAPI* Direct3DCreate9Type)(UINT SDKVersion);
 extern Direct3DCreate9Type RealDirect3DCreate9;

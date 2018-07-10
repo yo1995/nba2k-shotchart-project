@@ -1,5 +1,5 @@
 #include "trainerbase.h"
-
+#include <shlobj.h>
 
 // i have never defined struct like this, but it works!
 struct PerShotData {
@@ -40,6 +40,12 @@ float absolute_dist_rim_s;
 };
 */
 
+void CreateFolder(const char * path) {
+	if (!CreateDirectory(path, NULL)) {
+		return;
+	}
+}
+
 
 void SaveData::SaveDataFileInitandOpen() {
 	if (this->os.is_open()) {
@@ -47,7 +53,19 @@ void SaveData::SaveDataFileInitandOpen() {
 	}
 	this->filename.clear();
 	this->Get_Current_Time();
-	this->filename = "C:\\Chen\\" + this->current_time + "-game-record.csv";
+	std::string nba2k11_saves_path = GetRegValue(1, "Software\\2K Sports\\NBA 2K11", "Saves");
+	if (nba2k11_saves_path.empty()) {
+		// if no Saves folder then save to desktop 
+		char path_temp[MAX_PATH];
+		SHGetSpecialFolderPath(HWND_DESKTOP, path_temp, CSIDL_DESKTOPDIRECTORY, 0);
+		std::string path = path_temp;
+		this->filename = path + "\\" + this->current_time + "-game-record.csv";
+	}
+	else {
+		CreateFolder(std::string(nba2k11_saves_path + "ShotChart\\").c_str());
+		this->filename = nba2k11_saves_path + "ShotChart\\" +  this->current_time + "-game-record.csv";
+	}
+	
 	this->os.open(this->filename.c_str());
 	this->os.set_delimiter(',', "");
 	return;

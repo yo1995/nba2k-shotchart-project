@@ -36,6 +36,9 @@
     <ClCompile Include="..\HackBase\csvsavedata.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\hackbase\getregvalue.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\HackBase\minicsv.h">

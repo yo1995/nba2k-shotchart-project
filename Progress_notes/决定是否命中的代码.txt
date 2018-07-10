@@ -1,0 +1,52 @@
+决定是否命中的代码
+
+fld dword ptr [nba2k11.exe+B2FFC4] { [1066.80] }
+fcomp dword ptr [esi+40]
+fnstsw ax
+test ah,05 { 5 }
+jp nba2k11.exe+5886D9
+fld dword ptr [nba2k11.exe+B32CF0] { [0.33] }
+jmp nba2k11.exe+5886AC
+fld dword ptr [esi+48]	//命中率预测值
+sub esp,08 { 8 }
+cmp dword ptr [esi+00000388],00 { 0 }	//命中为1，未命中为0
+fstp dword ptr [esp+04]
+fld dword ptr [esi+40]
+fstp dword ptr [esp]
+je nba2k11.exe+588719
+push nba2k11.exe+B73B98 { [0.00] }	//只有这里有区别
+call nba2k11.exe+587680
+fstp dword ptr [esp+04]
+fld dword ptr [esp+04]
+push ecx
+fstp dword ptr [esp]
+call nba2k11.exe+3CAC9
+neg eax
+sbb eax,eax
+neg eax
+add eax,01 { 1 }
+pop esi
+pop ecx
+ret 
+push nba2k11.exe+B73C10 { [00000000] }	//只有这里有区别
+call nba2k11.exe+587680
+fstp dword ptr [esp+04]
+fld dword ptr [esp+04]
+push ecx
+fstp dword ptr [esp]
+call nba2k11.exe+3CAC9
+neg eax
+sbb eax,eax
+add eax,01 { 1 }
+pop esi
+pop ecx
+ret 
+
+
+
+通过读取对应地址谁修改了，得到了
+nba2k11.exe+57D99D - C7 05 78FAD505 01000000 - mov [nba2k11.exe+595FA78],00000001 { [00000001] }
+将代码锁定后所有投篮均会命中
+
+
+nba2k11.exe+18E44可能是判断命中的函数

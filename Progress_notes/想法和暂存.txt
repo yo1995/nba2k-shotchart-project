@@ -1,0 +1,36 @@
+xmm0:349.94 _ 251.36 _ -989.75 _ 1.00
+
+fstp = Floating-point STore and Pop
+
+ Floating Point Unit's stack FPU = stack
+ 
+ fstp dword ptr [nba2k11.exe+595F738] 
+ 
+想法：
+1、找2k有没有console模式能够得到数据 - 想多了
+2、通过得分确定球员ID，通过ID匹配gametrack数据
+
+附加：
+球员生涯数据库，每场比赛赛后记录五大数据，出场时间
+
+
+http://home.deec.uc.pt/~jlobo/tc/artofasm/ch14/ch144.htm
+
+决定进球类型 - 0三不沾1砸框2空刷3打板 5大号空刷/偏出？ 6三沾 7大号砸框进/砸板上沿/颠框 8弹框而出，经过圆柱体
+
+整体思路归纳：
+
+	启动trainer
+	执行nba2k11.exe进程并读取其内存
+	为程序装上D3D Hook以实现全屏显示字符
+	读取Fn功能按键以使能各项功能，并显示当前记录调整状态
+		- 我的投篮全部命中；
+		- 对方投篮全部投失；
+- 开始录制本场比赛投篮点数据与其他数据等；
+- 标准比赛数据：当前个人数据，比赛进行时间等等
+
+There is no magic article or trick, the real trick is to not bounce around looking for information already right there for something that just magically works with no learning.
+
+
+There is no need to install the legacy DirectX SDK to use DirectX Tool Kit. The DirectX SDK is deprecated and you should not use it. The only time you would need to install the legacy DirectX SDK for this tutorial series is if you are using Windows 7 for the audio portions. See MSDN, DirectX SDK Samples Catalog, and DirectX SDK Tools Catalog.
+

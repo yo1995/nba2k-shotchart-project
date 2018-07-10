@@ -11,7 +11,9 @@ import base64
 
 # init_notebook_mode(connected=True)
 
-with open("./Resources/nba-plan-draw.png", "rb") as image_file:
+
+# nba-plan-line for sketch bg, nba-plan-draw for Thunders bg
+with open("./Resources/nba-plan-line.png", "rb") as image_file:
     encoded_string = base64.b64encode(image_file.read()).decode()
 # add the prefix that plotly will want when using the string as source
 encoded_image = "data:image/png;base64," + encoded_string
@@ -127,7 +129,7 @@ layout = go.Layout(
         range=[-800, 800],
         fixedrange=True,
                 ),
-    title='Shots by Michael Jordan in NBA2K11 shootout session',
+    title='Shots by Michael Jordan in NBA2K11 MyPlayer mode',
     showlegend=True,
     height=873,
     width=1602
@@ -135,4 +137,4 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=data, layout=layout)
-plot(fig)
+plot(fig, filename='./docs/jordan-plot.html')

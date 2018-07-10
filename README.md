@@ -2,11 +2,27 @@
 
 obtaining game data from nba2k11 to achieve further visualizations.
 
-Everything is number!
+as Dr. Drew has always said, Everything is a number!
 
 ## Description
 
-A simple script to.
+This project aims to provide several interesting add-on features for NBA2K11 game.
+NBA2K11 is a basketball video game which was published in late 2010 and ingeniously provided the first ever next-gen Michael Jordan game mode.
+
+The tool specifically designed for the 1.0.1.1 version of the game, and all the memory addresses are obtained with cheatengine corresponding with this specific version. Hence before use please check your game executable “nba2k11.exe” to ensure the compatibility.
+
+The tool has multiple features, including:
+
+-	F5 RecordMode: All – for practice > freestyle and my player > play now > shoot around.
+-	F5 RecordMode: MJ mode – for Michael Jordan > play now > next game.
+-	F6 Record: On – to record the data from game or practice. Related with F5 status
+-	F7 GodMode: On - makes all the shots on court score – even if the shot is made in backcourt!
+-	F8 – to toggle the elements shown in game.
+-	Anticipated accuracy – shows the predicted percentage of made shot, so that you could have better knowledge about your shooting choice and release tempo.
+-	Anticipated basket type – shows the type of contact of the ball and the rim. Could be air ball/touch the rim/clean shot/hit the board, etc.
+-	Score or not – shows if the shot will score or not.
+-	In-game shot chart – displays the position of your previous shot in the game on a half court diagram.
+-	Game data save to local disk – when F6 is enabled, all the in game data including GameTrack shot spots, all the basic stats in game and game date will be save to a .csv file under your NBA2K11 Saves folder. If the Saves folder is not found, then the .csv file will be saved at your Desktop folder.
 
 ## Versions
 
@@ -16,7 +32,15 @@ A simple script to.
 
 ## Usage
 
-run it 
+0. make sure the DirectX libraries are properly configured in your system.
+
+1. put the d3d9.dll under the directory of "nba2k11.exe" executable
+
+2. run the game, the dashboard will pop up about 8 seconds after the game running.
+
+3. use previously mentioned F5 F6 F7 and F8 keys to toggle the features.
+
+4. (advanced) run the Python script to obtain a visualized shot chart with plot.ly. configure at your own wish!
 
 ## More to add
 
@@ -37,6 +61,12 @@ run it
 ## Keywords
 
 tool | D3D Hook | Trainer | NBA2K | nba2k11 | mod | visualization | 
+
+## Refs
+
+I've exported the links that I have referred to. please check below.
+
+[Bookmarks of all the ref links](https://yo1995.github.io/nba2k-shotchart-project/bookmarks_2018_7_10.html)
 
 ## Credits
 
@@ -102,6 +132,8 @@ pD3D9EndScene = DetourFunc
 具体参考程序。
 
 ### D3D Draw Functions
+
+![茶壶](/Progress_notes/mesh_teapot.png)
 
 调用DX原生的绘制API，主要有画线画字画图片。当然如果愿意，还可以一键绘制茶壶（D3DXCreateTeapot）
 

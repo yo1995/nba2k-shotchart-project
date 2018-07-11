@@ -1,7 +1,6 @@
 #pragma once
 
 #include "trainerbase.h"
-#include <tchar.h>
 
 //Functions & other definitions required-->
 typedef int(__stdcall *MSGBOXAAPI)(IN HWND hWnd,

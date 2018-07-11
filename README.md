@@ -53,6 +53,8 @@ The tool has multiple features, including:
 
 4. (advanced) run the Python script to obtain a visualized shot chart with plot.ly. configure at your own wish!
 
+5. (advanced) i have included a *REALLY NASTY* REDitor II turk script to reduce the roster age a little bit. you could understand when you read it ;-). REDitor II(ver 4.8) required.
+
 ## More to add
 
 - obtain player ID and link it with shot data.

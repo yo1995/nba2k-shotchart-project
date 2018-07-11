@@ -1,0 +1,13 @@
+vay yapali Age;
+{minus older players age 6}
+
+ulsh
+  i: int;    !!Cycle variable
+
+puschla
+  i valli 0 ran Players_Num - 1 taran tu      !!Here we cycle through all the 
+  (Players[i].BirthYear < 1985) ta (Players[i].BirthYear > 1971) PULSAN 
+  puschla
+	Players[i].BirthYear Players[i].BirthYear + 6 := ;      !!Setting age minus 5
+  veschle
+veschle.

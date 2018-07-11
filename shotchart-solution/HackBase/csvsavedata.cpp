@@ -134,7 +134,11 @@ void SaveData::SaveDataFileLines() {
 	// os.set_delimiter(',', "");
 	if (this->os.is_open()) {
 		if (is_a_dunk) {
-			PerShotData PerShotData0(2, 1, 1250.0, 0.0, 0.0, 2);  // approx. x=1250cm, y=0 d=0 obviously
+			double d = 0.0;
+			srand((int)time(0));
+			d = ((double)rand()) / RAND_MAX;
+			d = 2 * d - 1;  // between -1 and 1
+			PerShotData PerShotData0(2, 1, 1272.5 + d, 0.0 + d, 0.0, 2);  // 47 - 4 = 43 feet minus 15 inch = 41'9" approx. x=1250cm, y=0 d=0 obviously
 			this->os << PerShotData0.score_type_s << PerShotData0.score_judge_s << PerShotData0.coordinate_x_100_s << PerShotData0.coordinate_y_100_s << PerShotData0.absolute_dist_rim_s << PerShotData0.type_s << NEWLINE;
 		}
 		else {

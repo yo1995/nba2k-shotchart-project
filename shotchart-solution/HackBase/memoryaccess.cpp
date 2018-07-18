@@ -95,54 +95,49 @@ void update_score_type(HANDLE pHandle) {
 	// update_score_type
 	ReadProcessMemory(pHandle, (LPVOID)score_type_addr, &score_type, sizeof(score_type), 0);
 	ReadProcessMemory(pHandle, (LPVOID)score_judge_addr, &score_judge, sizeof(score_judge), 0);
-	// update_projected_percent
-	ReadProcessMemory(pHandle, (LPVOID)projected_percent_addr, &projected_percent, sizeof(projected_percent), 0);
-	// update_total_time_elapsed
-	
 }
 
 
 void update_projected_percent(HANDLE pHandle) {
 	// move to above function to improve performance
+	// update_projected_percent
+	ReadProcessMemory(pHandle, (LPVOID)projected_percent_addr, &projected_percent, sizeof(projected_percent), 0);
 }
 
 
 // aka direct memory access. manipulate the memory region.
 // only read from global flags and the handle for address
 void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
-	update_score_type(pHandle);  // update multiple in 1 func to save time
-	
-	// update_projected_percent(pHandle);
+	if (if_game_started(pHandle)) {  // game started
+		update_score_type(pHandle);
+		update_projected_percent(pHandle);
 
-	
-	float shot_time_temp = shot_triggered_time;
-	float coordinate_x_temp = coordinate_x_100;
-	update_shot_triggered_time(pHandle);
-	if (shot_time_temp != shot_triggered_time) {  // anybody make a shot, ai, bot, teammate, etc.
-		update_shot_coordinates(pHandle);
-		(coordinate_x_temp == coordinate_x_100) ? (is_a_dunk = true) : (is_a_dunk = false);	 // the tricy part ;-)
+		float shot_time_temp = shot_triggered_time;
+		float coordinate_x_temp = coordinate_x_100;
+		update_shot_triggered_time(pHandle);
+		if (shot_time_temp != shot_triggered_time) {  // anybody make a shot, ai, bot, teammate, etc.
+			update_shot_coordinates(pHandle);
+			(coordinate_x_temp == coordinate_x_100) ? (is_a_dunk = true) : (is_a_dunk = false);	 // the tricy part ;-)
 
-		if (record_mode == 2) {
-			if (made_shot_Z_down) {
-				// then myself triggered a shot. update the x-ys
-				// alley-oops are ignored due to my noobieness. :-<
-				if (record_shot_chart_and_more) {
-					mSaveData->SaveDataFileLines();  // only record when toggled to true
+			if (record_mode == 2) {
+				if (made_shot_Z_down) {
+					// then myself triggered a shot. update the x-ys
+					// alley-oops are ignored due to my noobieness. :-<
+					if (record_shot_chart_and_more) {
+						update_score_type(pHandle);  // update multiple in 1 func to save time
+						mSaveData->SaveDataFileLines();  // only record when toggled to true
+					}
+					redraw_shotchart = true;	// serve as a lock to control the read from vector
+					made_shot_Z_down = false;	// reset the state and wait for another shot
 				}
-				redraw_shotchart = true;	// serve as a lock to control the read from vector
-				made_shot_Z_down = false;	// reset the state and wait for another shot
-			}
-			else {
-				redraw_shotchart = false;
+				else {
+					redraw_shotchart = false;
+				}
 			}
 		}
-	}
 
-	
-	
 
-	if (record_mode == 1 && record_shot_chart_and_more) {  // mj mp mode
-		if (if_game_started(pHandle)) {
+		if (record_mode == 1 && record_shot_chart_and_more) {  // mj mp mode
 			if (!PTS_ADDR) {  // addr == 0
 				int index;
 				index = acquire_PTS_ADDR(pHandle);
@@ -164,7 +159,7 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 				ReadProcessMemory(pHandle, (LPVOID)FTA_ADDR1, &fta_global, sizeof(fta_global), 0);
 				// read the points scored out and print it to see if addresses are correct.
 				ReadProcessMemory(pHandle, (LPVOID)PTS_ADDR, &PTS, sizeof(PTS), 0);
-
+				update_score_type(pHandle);  // update again to ensure status are correct
 				if (fgatemp != fga_global) {
 					pts_type = 2;
 					redraw_shotchart = true;
@@ -185,11 +180,10 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 					redraw_shotchart = false;
 				}
 			}
-		}
-		else {
-			return;  // game not started
-		}
-		
-	}
 
+		}
+	}
+	else {
+		return;  // game not started
+	}
 }

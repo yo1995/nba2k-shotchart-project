@@ -13,6 +13,8 @@ OMG WTH for several time i just wanted to refactor the whole piece of s**t! so c
 
 #define VERBOSEMODE false
 
+extern DWORD PTS_ADDR;
+
 // F7 was dedicated to be toggle of god mode.
 extern char* F7_text;
 extern char F7_text_f[];

@@ -7,6 +7,8 @@ int court_bg_x = 240;	// in pixels
 int court_bg_y = 225;
 int dot_size = 8;
 
+DWORD PTS_ADDR = 0x0;  // initialize the address before assignment
+
 // F6 display data and coordinates
 // char* score_type_text;
 int score_type = 0;
@@ -140,7 +142,16 @@ void onRender_dashboard(Renderer *renderer) {
 	sprintf_s(temp_str, "%.2f％", 100 * projected_percent);
 	renderer->DrawTxt(border_width, 1 + border_width + 4 * column_height, FontColor_default, temp_str);
 	renderer->DrawTxt(border_width, 1 + border_width + 5 * column_height, FontColor_default, dunk_text);
-	
+	if (!PTS_ADDR) {
+		char temp_str[10];
+		sprintf_s(temp_str, "%s", "MJ base addr not init!");
+		renderer->DrawTxt(border_width, 1 + border_width + 6 * column_height, RED(255), temp_str);
+	}
+	else {
+		char temp_str[10];
+		sprintf_s(temp_str, "MJ PTS: %d", PTS);
+		renderer->DrawTxt(border_width, 1 + border_width + 6 * column_height, FontColor_default, temp_str);
+	}
 	/* do not need to expose the raw data to regular users.
 	char temp_str[255];
 	sprintf_s(temp_str, "%.2f", coordinate_x_100); //将100转为16进制表示的字符串。

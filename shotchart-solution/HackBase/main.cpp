@@ -56,7 +56,6 @@ void init_main() {
 
 	if (hUser32) FreeLibrary(hUser32);
 
-	// HWND hWnd = GetForegroundWindow();
 	HWND hWnd = FindWindowA(0, windowname);
 	DWORD pid;
 	GetWindowThreadProcessId(hWnd, &pid);
@@ -70,7 +69,6 @@ void init_main() {
 		return;
 	}
 	
-
 	Sleep(2000);
 	
 

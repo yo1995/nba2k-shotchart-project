@@ -7,21 +7,21 @@ DWORD god_mode_byte_addr = 0x0097D9A3;	// nba2k11.exe+57D99D - C7 05 78FAD505 00
 
 
 // 2. the following data are for SG player, particular for jordan mplayer mode
-DWORD MIN_ADDR = 0x05C31B98;  // IN FLOAT seconds
-DWORD PTS_ADDR = 0x05C31874;
-DWORD FGA_ADDR = 0x05C31884;
-DWORD FGM_ADDR = 0x05C31880;
-DWORD PA3_ADDR = 0x05C3188C;
-DWORD PM3_ADDR = 0x05C31888;
-DWORD FTA_ADDR = 0x05C3187C;
-DWORD FTM_ADDR = 0x05C31878;
-DWORD FREB_ADDR = 0x05C31A3C;  // 前场板
-DWORD BREB_ADDR = 0x05C31A40;  // 后场板
-DWORD AST_ADDR = 0x05C31A78;
-DWORD STL_ADDR = 0x05C31A6C;
-DWORD BLK_ADDR = 0x05C31A70;
-DWORD TOV_ADDR = 0x05C31A7C;
-DWORD PLM_ADDR = 0x05C31A8C;  // 正负值
+// the address offset for each player is 0x43C, order:pg sg sf pf c 6-12
+DWORD FTM_ADDR = PTS_ADDR + 0x4;
+DWORD FTA_ADDR = PTS_ADDR + 0x8;
+DWORD FGA_ADDR = PTS_ADDR + 0x10;
+DWORD FGM_ADDR = PTS_ADDR + 0xC;
+DWORD PA3_ADDR = PTS_ADDR + 0x18;
+DWORD PM3_ADDR = PTS_ADDR + 0x14;
+DWORD FRB_ADDR = PTS_ADDR + 0x1C8;  // 前场板
+DWORD BRB_ADDR = PTS_ADDR + 0x1CC;  // 后场板
+DWORD STL_ADDR = PTS_ADDR + 0x1F8;
+DWORD BLK_ADDR = PTS_ADDR + 0x1FC;
+DWORD AST_ADDR = PTS_ADDR + 0x204;
+DWORD TOV_ADDR = PTS_ADDR + 0x208;
+DWORD PLM_ADDR = PTS_ADDR + 0x218;  // 正负值
+DWORD MIN_ADDR = PTS_ADDR + 0x324;  // IN FLOAT seconds
 
 
 void read_end_of_game_data(HANDLE pHandle,
@@ -49,15 +49,13 @@ void read_end_of_game_data(HANDLE pHandle,
 	ReadProcessMemory(pHandle, (LPVOID)PM3_ADDR, &pm3, sizeof(pm3), 0);
 	ReadProcessMemory(pHandle, (LPVOID)FTA_ADDR, &fta, sizeof(fta), 0);
 	ReadProcessMemory(pHandle, (LPVOID)FTM_ADDR, &ftm, sizeof(ftm), 0);
-	ReadProcessMemory(pHandle, (LPVOID)FREB_ADDR, &freb, sizeof(freb), 0);
-	ReadProcessMemory(pHandle, (LPVOID)BREB_ADDR, &breb, sizeof(breb), 0);
+	ReadProcessMemory(pHandle, (LPVOID)FRB_ADDR, &freb, sizeof(freb), 0);
+	ReadProcessMemory(pHandle, (LPVOID)BRB_ADDR, &breb, sizeof(breb), 0);
 	ReadProcessMemory(pHandle, (LPVOID)AST_ADDR, &ast, sizeof(ast), 0);
 	ReadProcessMemory(pHandle, (LPVOID)STL_ADDR, &stl, sizeof(stl), 0);
 	ReadProcessMemory(pHandle, (LPVOID)BLK_ADDR, &blk, sizeof(blk), 0);
 	ReadProcessMemory(pHandle, (LPVOID)TOV_ADDR, &tov, sizeof(tov), 0);
 	ReadProcessMemory(pHandle, (LPVOID)PLM_ADDR, &plm, sizeof(plm), 0);
-	// read the points scored out and print it to see if addresses are correct.
-	ReadProcessMemory(pHandle, (LPVOID)PTS_ADDR, &PTS, sizeof(PTS), 0);
 }
 
 void change_god_mode(HANDLE pHandle) {
@@ -78,6 +76,7 @@ void UpdateDMA_afterKeyDown(HANDLE pHandle_r, HANDLE pHandle_w, SaveData *mSaveD
 	if (IsKeyDown(VK_F6)) {
 		if (record_shot_chart_and_more) {
 			record_shot_chart_and_more = false;
+			PTS_ADDR = 0x0;  // reset addr for MJ
 			float min = 0;
 			int pts = 0;
 			int fga = 0;

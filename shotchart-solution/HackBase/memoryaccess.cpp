@@ -24,14 +24,13 @@ DWORD total_time_elapsed_addr	= 0x05439C1C;	// ×ÜÁ÷ÊÅÊ±¼ä£¬°üÀ¨ÔÝÍ£±íÑÝµÈ£¬²»°üÀ
 
 // 1. the followings are for quartered games, e.g.
 // dynasty, quick game, mplayer, jordan, etc.
-DWORD game_time_elapsed_addr	= 0x05544DF4;	// ±ÈÈüÁ÷ÊÅÊ±¼ä£¬½öÊÊÓÃÓÚ·Ö½Ú±ÈÈüµÄÄ£Ê½£¬ÃëÊý
+DWORD game_time_elapsed_addr	= 0x05544DF4;	// ±ÈÈüÁ÷ÊÅÊ±¼ä£¬½öÊÊÓÃÓÚ·Ö½Ú±ÈÈüµÄÄ£Ê½£¬ÃëÊý£¬ÔÝÊ±ÏÐÖÃ
 
 
 // 2. the following data are for SG player, particular for jordan mplayer mode
-DWORD FGA_ADDR1 = 0x05C31884;
-DWORD PA3_ADDR1 = 0x05C3188C;
-DWORD FTA_ADDR1 = 0x05C3187C;
-
+DWORD FTA_ADDR1 = PTS_ADDR + 0x8;
+DWORD FGA_ADDR1 = PTS_ADDR + 0x10;
+DWORD PA3_ADDR1 = PTS_ADDR + 0x18;
 
 void update_shot_coordinates(HANDLE pHandle) {
 	// update_shot_coordinates
@@ -94,30 +93,38 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 	
 
 	if (record_mode == 1) {  // mj mp mode
-		int fgatemp = fga_global;
-		int pa3temp = pa3_global;
-		int ftatemp = fta_global;
-		ReadProcessMemory(pHandle, (LPVOID)FGA_ADDR1, &fga_global, sizeof(fga_global), 0);
-		ReadProcessMemory(pHandle, (LPVOID)PA3_ADDR1, &pa3_global, sizeof(pa3_global), 0);
-		ReadProcessMemory(pHandle, (LPVOID)FTA_ADDR1, &fta_global, sizeof(fta_global), 0);
-		if (fgatemp != fga_global) {
-			pts_type = 2;
-			redraw_shotchart = true;
-			if (record_shot_chart_and_more)  mSaveData->SaveDataFileLines();
-		}
-		else if (pa3temp != pa3_global) {
-			pts_type = 3;
-			redraw_shotchart = true;
-			if (record_shot_chart_and_more)  mSaveData->SaveDataFileLines();
-		}
-		else if (ftatemp != fta_global) {
-			pts_type = 1;
-			redraw_shotchart = true;
-			if (record_shot_chart_and_more)  mSaveData->SaveDataFileLines();
+		if (!PTS_ADDR) {  // addr == 0
+			return;  // if mj mode addr not initialized, do not record.
 		}
 		else {
-			pts_type = 0;  // default
-			redraw_shotchart = false;
+			int fgatemp = fga_global;
+			int pa3temp = pa3_global;
+			int ftatemp = fta_global;
+			ReadProcessMemory(pHandle, (LPVOID)FGA_ADDR1, &fga_global, sizeof(fga_global), 0);
+			ReadProcessMemory(pHandle, (LPVOID)PA3_ADDR1, &pa3_global, sizeof(pa3_global), 0);
+			ReadProcessMemory(pHandle, (LPVOID)FTA_ADDR1, &fta_global, sizeof(fta_global), 0);
+			// read the points scored out and print it to see if addresses are correct.
+			ReadProcessMemory(pHandle, (LPVOID)PTS_ADDR, &PTS, sizeof(PTS), 0);
+
+			if (fgatemp != fga_global) {
+				pts_type = 2;
+				redraw_shotchart = true;
+				if (record_shot_chart_and_more)  mSaveData->SaveDataFileLines();
+			}
+			else if (pa3temp != pa3_global) {
+				pts_type = 3;
+				redraw_shotchart = true;
+				if (record_shot_chart_and_more)  mSaveData->SaveDataFileLines();
+			}
+			else if (ftatemp != fta_global) {
+				pts_type = 1;
+				redraw_shotchart = true;
+				if (record_shot_chart_and_more)  mSaveData->SaveDataFileLines();
+			}
+			else {
+				pts_type = 0;  // default
+				redraw_shotchart = false;
+			}
 		}
 	}
 

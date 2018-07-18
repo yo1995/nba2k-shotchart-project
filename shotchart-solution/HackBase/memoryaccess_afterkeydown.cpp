@@ -8,21 +8,40 @@ DWORD god_mode_byte_addr = 0x0097D9A3;	// nba2k11.exe+57D99D - C7 05 78FAD505 00
 
 // 2. the following data are for SG player, particular for jordan mplayer mode
 // the address offset for each player is 0x43C, order:pg sg sf pf c 6-12
-DWORD FTM_ADDR = PTS_ADDR + 0x4;
-DWORD FTA_ADDR = PTS_ADDR + 0x8;
-DWORD FGA_ADDR = PTS_ADDR + 0x10;
-DWORD FGM_ADDR = PTS_ADDR + 0xC;
-DWORD PA3_ADDR = PTS_ADDR + 0x18;
-DWORD PM3_ADDR = PTS_ADDR + 0x14;
-DWORD FRB_ADDR = PTS_ADDR + 0x1C8;  // 前场板
-DWORD BRB_ADDR = PTS_ADDR + 0x1CC;  // 后场板
-DWORD STL_ADDR = PTS_ADDR + 0x1F8;
-DWORD BLK_ADDR = PTS_ADDR + 0x1FC;
-DWORD AST_ADDR = PTS_ADDR + 0x204;
-DWORD TOV_ADDR = PTS_ADDR + 0x208;
-DWORD PLM_ADDR = PTS_ADDR + 0x218;  // 正负值
-DWORD MIN_ADDR = PTS_ADDR + 0x324;  // IN FLOAT seconds
+DWORD FTM_ADDR = 0x0;
+DWORD FTA_ADDR = 0x0;
+DWORD FGA_ADDR = 0x0;
+DWORD FGM_ADDR = 0x0;
+DWORD PA3_ADDR = 0x0;
+DWORD PM3_ADDR = 0x0;
+DWORD FRB_ADDR = 0x0;  // 前场板
+DWORD BRB_ADDR = 0x0;  // 后场板
+DWORD STL_ADDR = 0x0;
+DWORD BLK_ADDR = 0x0;
+DWORD AST_ADDR = 0x0;
+DWORD TOV_ADDR = 0x0;
+DWORD PLM_ADDR = 0x0;  // 正负值
+DWORD MIN_ADDR = 0x0;  // IN FLOAT seconds
 
+
+void update_stats_addresses() {
+	// 2. the following data are for SG player, particular for jordan mplayer mode
+	// the address offset for each player is 0x43C, order:pg sg sf pf c 6-12
+	DWORD FTM_ADDR = PTS_ADDR + 0x4;
+	DWORD FTA_ADDR = PTS_ADDR + 0x8;
+	DWORD FGA_ADDR = PTS_ADDR + 0x10;
+	DWORD FGM_ADDR = PTS_ADDR + 0xC;
+	DWORD PA3_ADDR = PTS_ADDR + 0x18;
+	DWORD PM3_ADDR = PTS_ADDR + 0x14;
+	DWORD FRB_ADDR = PTS_ADDR + 0x1C8;  // 前场板
+	DWORD BRB_ADDR = PTS_ADDR + 0x1CC;  // 后场板
+	DWORD STL_ADDR = PTS_ADDR + 0x1F8;
+	DWORD BLK_ADDR = PTS_ADDR + 0x1FC;
+	DWORD AST_ADDR = PTS_ADDR + 0x204;
+	DWORD TOV_ADDR = PTS_ADDR + 0x208;
+	DWORD PLM_ADDR = PTS_ADDR + 0x218;  // 正负值
+	DWORD MIN_ADDR = PTS_ADDR + 0x324;  // IN FLOAT seconds
+}
 
 void read_end_of_game_data(HANDLE pHandle,
 	float &min,
@@ -41,6 +60,7 @@ void read_end_of_game_data(HANDLE pHandle,
 	int &tov,
 	int &plm
 ) {
+	update_stats_addresses();  // update addresses for saving data
 	ReadProcessMemory(pHandle, (LPVOID)MIN_ADDR, &min, sizeof(min), 0);
 	ReadProcessMemory(pHandle, (LPVOID)PTS_ADDR, &pts, sizeof(pts), 0);
 	ReadProcessMemory(pHandle, (LPVOID)FGA_ADDR, &fga, sizeof(fga), 0);
@@ -70,13 +90,10 @@ void change_god_mode(HANDLE pHandle) {
 	}
 }
 
-
-
 void UpdateDMA_afterKeyDown(HANDLE pHandle_r, HANDLE pHandle_w, SaveData *mSaveData) {
 	if (IsKeyDown(VK_F6)) {
 		if (record_shot_chart_and_more) {
 			record_shot_chart_and_more = false;
-			PTS_ADDR = 0x0;  // reset addr for MJ
 			float min = 0;
 			int pts = 0;
 			int fga = 0;
@@ -92,8 +109,14 @@ void UpdateDMA_afterKeyDown(HANDLE pHandle_r, HANDLE pHandle_w, SaveData *mSaveD
 			int blk = 0;
 			int tov = 0;
 			int plm = 0;
-			read_end_of_game_data(pHandle_r, min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm);
-			mSaveData->SaveDataFileFooter(min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm);
+			if (record_mode == 2) {  // for shootaround mode only record 0 data
+				mSaveData->SaveDataFileFooter(min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm);
+			}
+			if (record_mode == 1) {
+				read_end_of_game_data(pHandle_r, min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm);
+				mSaveData->SaveDataFileFooter(min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm);
+			}
+			PTS_ADDR = 0x0;  // reset addr for MJ
 		}
 		else {
 			record_shot_chart_and_more = true;

@@ -65,6 +65,7 @@ float shot_triggered_time = 0;
 float projected_percent = 0;
 
 int PTS = 0;
+float total_time_elapsed = 0;
 
 int pts_type = 0;
 int fga_global = 0;
@@ -143,13 +144,14 @@ void onRender_dashboard(Renderer *renderer) {
 	renderer->DrawTxt(border_width, 1 + border_width + 4 * column_height, FontColor_default, temp_str);
 	renderer->DrawTxt(border_width, 1 + border_width + 5 * column_height, FontColor_default, dunk_text);
 	if (!PTS_ADDR) {
-		char temp_str[10];
+		char temp_str[32];
 		sprintf_s(temp_str, "%s", "MJ base addr not init!");
 		renderer->DrawTxt(border_width, 1 + border_width + 6 * column_height, RED(255), temp_str);
 	}
 	else {
-		char temp_str[10];
+		char temp_str[32];
 		sprintf_s(temp_str, "MJ PTS: %d", PTS);
+		// 	sprintf_s(temp_str, "addr: %x", PTS_ADDR);
 		renderer->DrawTxt(border_width, 1 + border_width + 6 * column_height, FontColor_default, temp_str);
 	}
 	/* do not need to expose the raw data to regular users.

@@ -84,6 +84,7 @@ extern int fta_global;
 extern int pa3_global;
 
 extern int pts_type;  // 1pt ft, 2pt, 3pt. default 0 for simple record mode.
+extern float total_time_elapsed;  // to judge if game started for mj mode
 
 // 保存至csv文件
 class SaveData {

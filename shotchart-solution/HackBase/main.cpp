@@ -7,6 +7,7 @@
 HackBase *mHackBase = 0;
 SaveData *mSaveData = 0;
 HMODULE g_d3d9Module = NULL;
+DWORD total_time_elapsed_addr = 0x05439C1C;
 
 bool d3d9hijack(HMODULE hModule) {
 	TCHAR processPath[MAX_PATH];
@@ -78,6 +79,7 @@ void init_main() {
 	while (true) { //infinite loop! might affect the performance.
 		// i > 5 ? i = 0 : ++i;
 		UpdateDMAs(pHandle_r, mSaveData);
+		ReadProcessMemory(pHandle_r, (LPVOID)total_time_elapsed_addr, &total_time_elapsed, sizeof(total_time_elapsed), 0);
 		// keys after dma cause we need to depend on Z down
 		UpdateHotkeys(i);
 		UpdateDMA_afterKeyDown(pHandle_r, pHandle_w, mSaveData);

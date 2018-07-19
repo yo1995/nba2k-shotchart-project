@@ -211,7 +211,7 @@ D3DXCreateTextureFromFile
 
 180719 关于主客场地址差别的问题
 
-![jordan name](/Progress_notes/assembly/jordan.png)
+![jordan name](/Progress_notes/jordan.png)
 
 最开始写程序的时候完全疏忽了这一点，一直相当然地认为对应乔丹模式的球员数据结构体应该只有一个地址。结果打完第三场比赛发现，原来根本不是自己想象的那样啊😂
 

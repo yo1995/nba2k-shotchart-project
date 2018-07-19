@@ -47,13 +47,13 @@ The tool has multiple features, including:
 
 1. put the d3d9.dll and court.png under the directory of "nba2k11.exe" executable; also make sure directory "C:\\temp\\" exists so that d3d hook log file can output
 
-2. run the game, the dashboard will pop up about 25-30 seconds after the game running.
+2. run the game, the dashboard will pop up about 10 seconds after the game running. do not click the message box if in full screen mode, or the game might crash!
 
 3. use previously mentioned F5 F6 F7 and F8 keys to toggle the features.
 
 4. (advanced) run the Python script to obtain a visualized shot chart with plot.ly. configure at your own wish!
 
-5. (advanced) i have included a *REALLY NASTY* REDitor II turk script to reduce the roster age a little bit. you could understand when you read it ;-). REDitor II(ver 4.8) required.
+5. (advanced) i have included a *REALLY NASTY* REDitor II turk script to reduce the roster age a little bit. you could understand when you read it ;-). REDitor II(ver 4.8) required. or you could just use [the tweaked ROSTER file](/Resources/Rosteryoung.ROS) included!
 
 ## More to add
 
@@ -208,6 +208,22 @@ D3DXCreateTextureFromFile
 ![opcode](/Progress_notes/assembly/opcode.png)
 
 另一个便是投篮成功率。发现锁定投篮命中率为1后仍旧不能保证必中。读了如上的代码后发现了判定命中的标准，干脆把不中改为必中，从而实现了投篮命中的功能。
+
+180719 关于主客场地址差别的问题
+
+![jordan name](/Progress_notes/assembly/jordan.png)
+
+最开始写程序的时候完全疏忽了这一点，一直相当然地认为对应乔丹模式的球员数据结构体应该只有一个地址。结果打完第三场比赛发现，原来根本不是自己想象的那样啊😂
+
+重新搜索内存一番后发现，原来球员数据的结构是按照比赛时主客队分别12名球员进行初始化的。也就是说，以主队PG开始，每名球员有长度为0x43C的内存空间存储其得分、篮板、助攻等数据。起始地址为一固定的基址0x05C2E14F。于是，按照这个结构重新设计了代码。
+
+接下来又遇到一个问题：如何确定乔丹的地址呢？一般而言，乔丹是球队首发，打的位置几乎总是SG，但当球队内首发SF受伤时有时教练会安排乔丹替补；也不排除去某些球队乔丹客串首发SF的可能性。总之，不能一概而论。因此，找到一种绝对稳妥的确定乔丹对应数据的方法是非常有必要的。
+
+首先我猜测，结构体里一定有对应球员ID的数值。找找吧，翻来翻去貌似确实有两个值跟球员有关，但对从80年代到90年代的不同乔丹值并未保持一致。接着猜测，总该有个指针指向球员姓名，翻来找去终于找到了，是在每个球员基址+0x11的位置的一个指针，指向另一个以0x05E4A538为基址，以B58为偏移量的球员信息结构体。巧合的是，这个结构体与球员数据结构体顺序上一一对应，也免去了为了得到姓名需要双重指针的麻烦。当然也在意料之中：倘若自己设计，也会把球员信息和球员数据写死一一对应的，这样方便调用。
+
+于是问题变成了如何读取字符型指针并进行比较。其中查找了wchar_t、MessageBoxW、wcsncmp等用法，以及关于更新地址读取内存的逻辑优化，看着满屏幕的全局变量有点后悔……
+
+最后实现的是通过遍历24名球员信息结构体找到姓名匹配Michael Jordan的球员，将他的得分地址写入全局变量PTS_ADDR即可。
 
 #### toggle logics
 

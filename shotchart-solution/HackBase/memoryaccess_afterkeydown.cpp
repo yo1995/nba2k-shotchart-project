@@ -27,20 +27,20 @@ DWORD MIN_ADDR = 0x0;  // IN FLOAT seconds
 void update_stats_addresses() {
 	// 2. the following data are for SG player, particular for jordan mplayer mode
 	// the address offset for each player is 0x43C, order:pg sg sf pf c 6-12
-	DWORD FTM_ADDR = PTS_ADDR + 0x4;
-	DWORD FTA_ADDR = PTS_ADDR + 0x8;
-	DWORD FGA_ADDR = PTS_ADDR + 0x10;
-	DWORD FGM_ADDR = PTS_ADDR + 0xC;
-	DWORD PA3_ADDR = PTS_ADDR + 0x18;
-	DWORD PM3_ADDR = PTS_ADDR + 0x14;
-	DWORD FRB_ADDR = PTS_ADDR + 0x1C8;  // 前场板
-	DWORD BRB_ADDR = PTS_ADDR + 0x1CC;  // 后场板
-	DWORD STL_ADDR = PTS_ADDR + 0x1F8;
-	DWORD BLK_ADDR = PTS_ADDR + 0x1FC;
-	DWORD AST_ADDR = PTS_ADDR + 0x204;
-	DWORD TOV_ADDR = PTS_ADDR + 0x208;
-	DWORD PLM_ADDR = PTS_ADDR + 0x218;  // 正负值
-	DWORD MIN_ADDR = PTS_ADDR + 0x324;  // IN FLOAT seconds
+	FTM_ADDR = PTS_ADDR + 0x4;
+	FTA_ADDR = PTS_ADDR + 0x8;
+	FGA_ADDR = PTS_ADDR + 0x10;
+	FGM_ADDR = PTS_ADDR + 0xC;
+	PA3_ADDR = PTS_ADDR + 0x18;
+	PM3_ADDR = PTS_ADDR + 0x14;
+	FRB_ADDR = PTS_ADDR + 0x1C8;  // 前场板
+	BRB_ADDR = PTS_ADDR + 0x1CC;  // 后场板
+	STL_ADDR = PTS_ADDR + 0x1F8;
+	BLK_ADDR = PTS_ADDR + 0x1FC;
+	AST_ADDR = PTS_ADDR + 0x204;
+	TOV_ADDR = PTS_ADDR + 0x208;
+	PLM_ADDR = PTS_ADDR + 0x218;  // 正负值
+	MIN_ADDR = PTS_ADDR + 0x324;  // IN FLOAT seconds
 }
 
 void read_end_of_game_data(HANDLE pHandle,

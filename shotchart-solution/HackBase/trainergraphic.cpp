@@ -134,9 +134,9 @@ void onRender_dashboard(Renderer *renderer) {
 	// renderer->DrawBorder(0, 0, 4 * column_width, column_height, border_width, GREEN(255));
 	*/
 	// draw text
-	renderer->DrawTxt(border_width, 1 + border_width, PURPLE(255), record_mode_text);
-	renderer->DrawTxt(border_width, 1 + border_width + column_height, RED(255), F6_text);
-	renderer->DrawTxt(border_width, 1 + border_width + 2 * column_height, ORANGE(255), F7_text);
+	renderer->DrawTxt(border_width, 1 + border_width, record_mode == 1 ? FontColor_default : RED(255), record_mode_text);
+	renderer->DrawTxt(border_width, 1 + border_width + column_height, record_shot_chart_and_more ? GREEN(255) : RED(255), F6_text);
+	renderer->DrawTxt(border_width, 1 + border_width + 2 * column_height, all_players_god_mode ? RED(255) : FontColor_default, F7_text);
 	renderer->DrawTxt(border_width , 1 + border_width + 3 * column_height, FontColor_default, score_type_text);
 	renderer->DrawTxt(border_width + column_width, 1 + border_width + 3 * column_height, score_judge ? GREEN(255) : RED(255), score_judge_text);
 	char temp_str[10];
@@ -152,7 +152,7 @@ void onRender_dashboard(Renderer *renderer) {
 		char temp_str[32];
 		sprintf_s(temp_str, "MJ PTS: %d", PTS);
 		// 	sprintf_s(temp_str, "addr: %x", PTS_ADDR);
-		renderer->DrawTxt(border_width, 1 + border_width + 6 * column_height, FontColor_default, temp_str);
+		renderer->DrawTxt(border_width, 1 + border_width + 6 * column_height, GREEN(255), temp_str);
 	}
 	/* do not need to expose the raw data to regular users.
 	char temp_str[255];

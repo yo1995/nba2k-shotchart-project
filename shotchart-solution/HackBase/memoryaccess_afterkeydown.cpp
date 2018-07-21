@@ -128,8 +128,8 @@ void UpdateDMA_afterKeyDown(HANDLE pHandle_r, HANDLE pHandle_w, SaveData *mSaveD
 
 	if (IsKeyDown(VK_F7)) {
 		// god mode
-		all_players_god_mode ? (F7_text = F7_text_f) : (F7_text = F7_text_t);
 		all_players_god_mode = !all_players_god_mode;
+		all_players_god_mode ? (F7_text = F7_text_t) : (F7_text = F7_text_f);
 		change_god_mode(pHandle_w);
 	}
 }

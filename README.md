@@ -69,7 +69,9 @@ The tool has multiple features, including:
 
 ![preview](/Progress_notes/diff.png)
 
-根据不完全对比，游戏中绘制投篮点的场地背景图比例与正规场地不同，因此绘制点会存在漂移问题。但对于实际投篮点影响不大。因此游戏内实时投篮点绘制的功能可能会保持不完善的状态了……
+![diff](/Progress_notes/2k-plan.png)
+
+根据不完全对比，游戏中绘制投篮点的场地背景图比例与正规场地不同。半场图比正常的短，而全场图比正常的长（通过截图来看似乎游戏自己画的图都不准🤣）。因此绘制点会存在漂移问题。但对于实际投篮点影响不大。因此游戏内实时投篮点绘制的功能可能会保持不完善的状态了……
 
 - 更新Python绘图代码
 
@@ -120,6 +122,8 @@ for injecting my primary in-dev dlls to test the features.
 ---
 
 ## 具体实现介绍
+
+[博文](https://yo1995.github.io/coding/nba2k11-shotchart-project)
 
 ### DirectX Hook
 

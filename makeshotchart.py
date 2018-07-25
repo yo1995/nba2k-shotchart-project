@@ -5,16 +5,22 @@ import re
 import plotly.graph_objs as go
 from plotly.offline import init_notebook_mode, plot
 import base64
-
+import time
+import sys
 
 # import plotly
 # plotly.tools.set_credentials_file(username='', api_key='')
-
 # init_notebook_mode(connected=True)
 
 
 # nba-plan-line for sketch bg, nba-plan-draw for Thunders bg
-with open("./Resources/nba-plan-line.png", "rb") as image_file:
+# cwd = os.getcwd()
+# print(cwd)
+cwd = sys.path[0]
+
+nba_plan_path = cwd + '/Resources/nba-plan-line.png'
+jordan_plot_path = cwd + '/Resources/jordan-plot.html'
+with open(nba_plan_path, "rb") as image_file:
     encoded_string = base64.b64encode(image_file.read()).decode()
 # add the prefix that plotly will want when using the string as source
 encoded_image = "data:image/png;base64," + encoded_string
@@ -29,7 +35,7 @@ d0 = []
 
 # 读取当前目录下所有csv文件
 csv_file_list = []
-root_dir = os.getcwd()
+root_dir = cwd  # sys.path work under windows
 
 '''
 for filename in os.listdir(root_dir):
@@ -56,11 +62,12 @@ for filename in csv_file_list:
     pattern = '\\\\([0-9]{4})\\\\'
     year = re.search(pattern, filename).group(0)
     year = year.replace("\\", "")
-    print(year)
+
     with open(filename, 'r', encoding='UTF-8') as csv_file:
         reader = csv.reader(csv_file)
         old_rows = [row for row in reader]
-    print(old_rows[-1][0])
+    # print(year)
+    # print(old_rows[-1][0])
     for row in old_rows:
         if len(row) < 3:
             continue
@@ -70,13 +77,13 @@ for filename in csv_file_list:
                 x0.append('%.2f' % -float(row[2]))  # to prettify the output
                 y0.append('%.2f' % -float(row[3]))
                 d0.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' vs. ' +
+                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
                     old_rows[-1][0])
             else:
                 x0.append('%.2f' % float(row[2]))  # to prettify the output
                 y0.append('%.2f' % float(row[3]))
                 d0.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' vs. ' +
+                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
                     old_rows[-1][0])
 
     for row in old_rows:
@@ -88,12 +95,12 @@ for filename in csv_file_list:
                 x1.append('%.2f' % -float(row[2]))  # to prettify the output
                 y1.append('%.2f' % -float(row[3]))
                 d1.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' vs. ' + old_rows[-1][0])
+                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
             else:
                 x1.append('%.2f' % float(row[2]))  # to prettify the output
                 y1.append('%.2f' % float(row[3]))
                 d1.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' vs. ' +
+                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
                     old_rows[-1][0])
 
 
@@ -159,6 +166,7 @@ layout = go.Layout(
         fixedrange=True,
                 ),
     title='Shots by Michael Jordan in NBA2K11 MyPlayer mode',
+    hovermode='closest',
     showlegend=True,
     height=873,
     width=1602
@@ -166,4 +174,4 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=data, layout=layout)
-plot(fig, filename='./Resources/jordan-plot.html')
+plot(fig, filename=jordan_plot_path)

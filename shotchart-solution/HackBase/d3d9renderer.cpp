@@ -15,6 +15,7 @@ D3D9Renderer::D3D9Renderer(IDirect3DDevice9 *Device) {
 	mLine = NULL;
 	Texture_Interface = NULL;
 	Sprite_Interface = NULL;
+	this->deviceLost = false;
 	// will improve error handling here
 	/*
 	if () {
@@ -28,6 +29,51 @@ D3D9Renderer::D3D9Renderer(IDirect3DDevice9 *Device) {
 
 D3D9Renderer::~D3D9Renderer() {
 	SAFE_RELEASE(this->pDevice);
+}
+
+void D3D9Renderer::PreLost() {
+	if (mLine) mLine->OnLostDevice();
+	if (mFont) mFont->OnLostDevice();
+	if (Sprite_Interface) Sprite_Interface->OnLostDevice();
+}
+
+void D3D9Renderer::PostLost() {
+	if (mLine) mLine->OnResetDevice();
+	if (mFont) mFont->OnResetDevice();
+	if (Sprite_Interface) Sprite_Interface->OnResetDevice();
+}
+
+void D3D9Renderer::BeginScene() {
+	// I wrongly interpreted d3d9reset first... anyway hooking reset does work! just not sure if any memleak exists.
+	/*
+	HRESULT hr = this->pDevice->TestCooperativeLevel();
+	if (hr == D3DERR_DEVICELOST || hr == D3DERR_DEVICENOTRESET) {
+		MessageBox(0, "Device lost!", "1!", MB_ICONERROR);
+		if (!this->deviceLost) {
+			this->deviceLost = true;
+			mFont->Release();
+			mLine->Release();
+			Texture_Interface->Release();
+			Sprite_Interface->Release();
+		}
+		return;
+	}
+	else if (hr == D3D_OK) {
+		if (this->deviceLost) {
+			mFont = NULL;
+			mLine = NULL;
+			Texture_Interface = NULL;
+			Sprite_Interface = NULL;
+			this->deviceLost = false;
+			this->InitCreateFuncs();
+		}
+		return;
+	}
+	else {
+		MessageBox(0, "f**ked up, cannot handle it!", "Error", MB_ICONERROR);
+		return;
+	}
+	*/
 }
 
 void D3D9Renderer::InitCreateFuncs() {

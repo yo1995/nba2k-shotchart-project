@@ -9,6 +9,7 @@ OMG WTH for several time i just wanted to refactor the whole piece of s**t! so c
 */
 #include "hackbase.h"
 #include "minicsv.h"
+#include "wintoastlib.h"
 #include <ctime>  // for header savings
 
 #define VERBOSEMODE false
@@ -129,7 +130,10 @@ void UpdateDMA_afterKeyDown(HANDLE pHandle_r, HANDLE pHandle_w, SaveData *mSaveD
 // ∂¡»°≈–∂œ÷µ£¨ªÊ÷∆∆¡ƒª
 void UpdateBools();
 void UpdateGraphics(HackBase *mHackBase);
+void UpdateGraphicsWhenMinimized(HackBase *mHackBase);
 
+
+bool initToast();
 
 extern int PTS;
 

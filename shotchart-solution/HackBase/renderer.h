@@ -8,6 +8,8 @@ class Renderer {
 public:
 	virtual void BeginScene() = 0;
 	virtual void EndScene() = 0;
+	virtual void PreLost() = 0;
+	virtual void PostLost() = 0;
 	virtual void InitCreateFuncs() = 0;	// to createfont, createline, etc.
 	virtual void DrawPic(int x, int y) = 0;
 	virtual void DrawRect(int x, int y, int w, int h, Color color) = 0;

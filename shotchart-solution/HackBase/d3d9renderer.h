@@ -6,24 +6,27 @@
 class D3D9Renderer : public Renderer
 {
 private:
-	IDirect3DDevice9 *pDevice;
+	IDirect3DDevice9 * pDevice;
 
 	IDirect3DTexture9 *Texture_Interface;
 	ID3DXSprite *Sprite_Interface;
 	ID3DXLine *mLine;
 	ID3DXFont *mFont;
-	
+
 	// ID3DXLine *mLine;
 	// ID3DXFont *mFont;
 
 	bool CreateFont();
+	bool deviceLost;
 
 public:
 	D3D9Renderer(IDirect3DDevice9 *Device);
 	~D3D9Renderer();
 	void InitCreateFuncs();
-	void BeginScene() {}
+	void BeginScene();
 	void EndScene() {}
+	void PreLost();
+	void PostLost();
 	void RefreshData(IDirect3DDevice9 *Device);
 	void DrawPic(int x, int y);
 	void DrawRect(int x, int y, int w, int h, Color color);

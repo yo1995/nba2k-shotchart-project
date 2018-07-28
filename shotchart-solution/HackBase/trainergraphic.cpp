@@ -117,6 +117,12 @@ void onRender_shotchart(Renderer *renderer) {
 	
 }
 
+void onRender_minimized(Renderer *renderer) {
+	char temp_str[64];
+	sprintf_s(temp_str, "%s", "Main Window Minimized. Game Paused.");
+	renderer->DrawTxt(border_width, 1 + border_width, RED(255), temp_str);
+}
+
 void onRender_dashboard(Renderer *renderer) {
 	//renderer->InitCreateFuncs();
 	// draw rect background
@@ -225,6 +231,9 @@ void UpdateGraphics(HackBase *mHackBase) {
 }
 
 
+void UpdateGraphicsWhenMinimized(HackBase *mHackBase) {
+	mHackBase->setOnRender(onRender_minimized);
+}
 
 
 /*samples */

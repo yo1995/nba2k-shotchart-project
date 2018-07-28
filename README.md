@@ -34,12 +34,21 @@ The tool has multiple features, including:
 -	Score or not – shows if the shot will score or not.
 -	In-game shot chart – displays the position of your previous shot in the game on a half court diagram.
 -	Game data save to local disk – when F6 is enabled, all the in game data including GameTrack shot spots, all the basic stats in game and game date will be save to a .csv file under your NBA2K11 Saves folder. If the Saves folder is not found, then the .csv file will be saved at your Desktop folder.
+-	pause when minimized. pop up a toast in notification center to notify the user.
 
 ## Versions
 
 ### 20180706
 
 - added first version. works fine with mine.
+
+### 20180726
+
+- changed to findpattern method. hardcoded "C:\\WINDOWS\\system32\\d3d9.dll" and "\xC7\x06\x00\x00\x00\x00\x89\x86\x00\x00\x00\x00\x89\x86" into my dll. if any problem occurs, PLEASE ISSUE IT!
+
+- added notification center support.
+
+- more to see in commit log and release log. many thing improved!
 
 ## Usage
 
@@ -57,11 +66,11 @@ The tool has multiple features, including:
 
 ## More to add
 
-- obtain player ID and link it with shot data.
+- ~~obtain player ID and link it with shot data. ~~
 
-- 更改延迟启动逻辑
+- ~~更改延迟启动逻辑~~ 更：修复了hook方式，不再存在延迟启动的问题。
 
-- 从配置文件读取数据存储目录 - 读取注册表存入存档目录
+- 从配置文件读取数据存储目录 - ~~读取注册表存入存档目录~~
 
 - 改进显示顺序
 
@@ -73,11 +82,19 @@ The tool has multiple features, including:
 
 根据不完全对比，游戏中绘制投篮点的场地背景图比例与正规场地不同。半场图比正常的短，而全场图比正常的长（通过截图来看似乎游戏自己画的图都不准🤣）。因此绘制点会存在漂移问题。但对于实际投篮点影响不大。因此游戏内实时投篮点绘制的功能可能会保持不完善的状态了……
 
-- 更新Python绘图代码
+- ~~更新Python绘图代码~~
+
+- 整合钩子和修改器代码，汇总为一个项目
+
+- ~~暂停时halt减少资源占用~~
+
+- ~~修复全屏alt tab跳出时崩溃的问题（可能与lost device有关）https://www.unknowncheats.me/forum/c-and-c-/256699-alt-tab-support-directx.html~~ 更：通过reset修复
+
+- ~~alt tab 切出全屏模式~~ 更：在切出前判断是否为全屏模式，从而正确弹出通知
 
 - 改进头文件结构，清理无用变量函数
 
-- 整合钩子和修改器代码，汇总为一个项目
+- 改进代码风格，整理各种杂乱的写法
 
 ## Keywords
 
@@ -94,6 +111,10 @@ I've exported the links that I have referred to. please check below.
 - [minicsv.h](https://github.com/shaovoon/minicsv)
 
 for providing me a really handy tool to export shot data for further visualization.
+
+- [WinToast](https://github.com/mohabouje/WinToast)
+
+for notification message.
 
 - [hackbase](https://github.com/adstep/HackBaseFix2)
 
@@ -118,6 +139,10 @@ for thoughts on how to deal with keyboard message and menu design.
 - [Extreme Injector v3](https://github.com/master131/ExtremeInjector)
 
 for injecting my primary in-dev dlls to test the features.
+
+- [AhrixSpie](https://github.com/Famous02/AhrixSpie)
+
+for ref to reset hooking. really well structured code for d3d9 hooking & hacking.
 
 ---
 

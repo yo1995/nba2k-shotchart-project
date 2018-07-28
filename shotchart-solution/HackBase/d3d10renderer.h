@@ -27,6 +27,8 @@ public:
 	void InitCreateFuncs() {};
 	void BeginScene() {}
 	void EndScene() {}
+	void PreLost() {}
+	void PostLost() {}
 	void RefreshData(IDXGISwapChain *SwapChain);
 	void DrawPic(int x, int y) {}; // if needed implement later
 	void DrawRect(int x, int y, int w, int h, Color color);

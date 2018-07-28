@@ -26,8 +26,7 @@ bool d3d9hijack(HMODULE hModule) {
 	// 加载原DLL，获取真正的Direct3DCreate9地址
 	g_d3d9Module = LoadLibrary(dllPath);
 	RealDirect3DCreate9 = (Direct3DCreate9Type)GetProcAddress(g_d3d9Module, "Direct3DCreate9");
-	if (RealDirect3DCreate9 == NULL)
-	{
+	if (RealDirect3DCreate9 == NULL) {
 		MessageBox(NULL, _T("获取Direct3DCreate9地址失败"), _T("Error"), MB_ICONERROR);
 		return false;
 	}
@@ -38,25 +37,35 @@ void init_main() {
 	Sleep(6000);  // a silly way to load my trainer after game itself initialized.
 	char exename[] = "nba2k11.exe"; 
 	char windowname[] = "NBA 2K11";
+	
+	// to be compatible with CreateDevice hook method in fullscreen... since the original hook is deprecated, so the msgbox.
+	/*
+	// MessageBox(0, " Welcomed to use my add-on .\n For more information please visit \n https://github.com/yo1995/nba2k-shotchart-project", "NBA 2K11 shotchart add-on", MB_ICONINFORMATION);
 
 	HMODULE hUser32 = LoadLibrary(_T("user32.dll"));
-
 	if (hUser32) {
 		int iRet = 0;
 		UINT uiFlags = MB_OK | MB_SETFOREGROUND | MB_SYSTEMMODAL | MB_ICONINFORMATION;
 		iRet = MessageBoxTimeout(NULL, _T(" Welcomed to use my add-on .\n For more information please visit \n https://github.com/yo1995/nba2k-shotchart-project"),
 			_T("NBA 2K11 shotchart add-on"), uiFlags, 0, 6000);
-		
 	}
-	// MessageBox(0, " Welcomed to use my add-on .\n For more information please visit \n https://github.com/yo1995/nba2k-shotchart-project", "NBA 2K11 shotchart add-on", MB_ICONINFORMATION);
+	mHackBase = HackBase::Singleton();  // new a hackbase to hook d3d
+	if (!mHackBase->Initialize(onRender_clear, exename, windowname)) {
+		MessageBox(0, "Error hooking game. Maybe injected into wrong process...", "Failed to hook...", MB_ICONERROR);
+		return;
+	}
+	if (hUser32) FreeLibrary(hUser32);
+	*/
+
+	/* this part deals with d3d hooking */
 	mHackBase = HackBase::Singleton();  // new a hackbase to hook d3d
 	if (!mHackBase->Initialize(onRender_clear, exename, windowname)) {
 		MessageBox(0, "Error hooking game. Maybe injected into wrong process...", "Failed to hook...", MB_ICONERROR);
 		return;
 	}
 
-	if (hUser32) FreeLibrary(hUser32);
 
+	/* this part deals with memory read/write */
 	HWND hWnd = FindWindowA(0, windowname);
 	DWORD pid;
 	GetWindowThreadProcessId(hWnd, &pid);
@@ -65,26 +74,36 @@ void init_main() {
 	// https://www.unknowncheats.me/forum/c-and-c-/194439-writeprocessmemory.html
 	HANDLE pHandle_w = OpenProcess(PROCESS_VM_WRITE | PROCESS_VM_OPERATION, false, pid);
 	if (!hWnd || !pid) {
-	
 		MessageBox(0, "Error Finding Window.", "Window mismatch!", MB_ICONERROR);
 		return;
 	}
-	
-	Sleep(2000);
-	
 
 	// create a filename class to handle record adata file.
 	mSaveData = new SaveData();
 	int i = 0;  // decrease the time of update, serve as a delay.
+	bool toasted = false;
 	while (true) { //infinite loop! might affect the performance.
-		// i > 5 ? i = 0 : ++i;
-		UpdateDMAs(pHandle_r, mSaveData);
-		ReadProcessMemory(pHandle_r, (LPVOID)total_time_elapsed_addr, &total_time_elapsed, sizeof(total_time_elapsed), 0);
-		// keys after dma cause we need to depend on Z down
-		UpdateHotkeys(i);
-		UpdateDMA_afterKeyDown(pHandle_r, pHandle_w, mSaveData);
-		UpdateGraphics(mHackBase);
-		Sleep(200); // loop will only start again after 1/5 of a second
+		if (IsIconic(hWnd)) {
+			// UpdateGraphicsWhenMinimized(mHackBase);  // uh, cannot read if minimized...
+			if (!toasted) {
+				if ((GetWindowLong(hWnd, GWL_STYLE) & WS_POPUP) != 0) {  // full screen mode
+					Sleep(4000);
+				}
+				initToast();
+				toasted = true;  // whether or not init succeeded, proceed anyway.
+			}
+			Sleep(2000);
+		}
+		else {
+			toasted = false;
+			UpdateDMAs(pHandle_r, mSaveData);
+			ReadProcessMemory(pHandle_r, (LPVOID)total_time_elapsed_addr, &total_time_elapsed, sizeof(total_time_elapsed), 0);
+			// keys after dma cause we need to depend on Z down
+			UpdateHotkeys(i);
+			UpdateDMA_afterKeyDown(pHandle_r, pHandle_w, mSaveData);
+			UpdateGraphics(mHackBase);
+			Sleep(200);  // loop will only start again after 1/5 of a second
+		}
 	}
 }
 

@@ -90,6 +90,7 @@ HackBase::HackBase() {
 		"\x4E\x4E\x5A\x4A\x4B\x4E\x5A\x7C\x4E\x74\x6C\x7E\x4B\x73\x28\x49\x4D\x29\x6B\x4A"
 		"\x4F\x5E\x5E\x55\x4B\x29\x55\x4A\x56\x59\x25\x25", 24)).c_str()); // HackBase by ChaosLeader - visit http://www.unknowncheats.me/forum/
 	*/
+	logln("Welcomed to use my add-on.\nFor more information please visit https://github.com/yo1995/nba2k-shotchart-project");
 	this->mRenderer = 0;
 
 	this->onRender = 0;

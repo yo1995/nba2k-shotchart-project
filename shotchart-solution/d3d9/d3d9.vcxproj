@@ -123,17 +123,20 @@
   <ItemGroup>
     <ClCompile Include="..\HackBase\csvsavedata.cpp" />
     <ClCompile Include="..\HackBase\d3d9hijack.cpp" />
+    <ClCompile Include="..\HackBase\displaytoast.cpp" />
     <ClCompile Include="..\hackbase\getregvalue.cpp" />
     <ClCompile Include="..\HackBase\hotkey.cpp" />
     <ClCompile Include="..\HackBase\main.cpp" />
     <ClCompile Include="..\HackBase\memoryaccess.cpp" />
     <ClCompile Include="..\HackBase\memoryaccess_afterkeydown.cpp" />
     <ClCompile Include="..\HackBase\trainergraphic.cpp" />
+    <ClCompile Include="..\HackBase\wintoastlib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\hackbase\messageboxtimeout.h" />
     <ClInclude Include="..\HackBase\minicsv.h" />
     <ClInclude Include="..\HackBase\trainerbase.h" />
+    <ClInclude Include="..\HackBase\wintoastlib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

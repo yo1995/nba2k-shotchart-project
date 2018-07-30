@@ -1,3 +1,4 @@
+
 import csv
 
 import os
@@ -11,20 +12,27 @@ import sys
 # import plotly
 # plotly.tools.set_credentials_file(username='', api_key='')
 # init_notebook_mode(connected=True)
+''' import part ends. '''
 
+debug = False
+''' define part ends. '''
 
 # nba-plan-line for sketch bg, nba-plan-draw for Thunders bg
-# cwd = os.getcwd()
-# print(cwd)
+# cwd = os.getcwd()  # deprecated
+
 cwd = sys.path[0]
+if debug:
+    print(cwd)
 
 nba_plan_path = cwd + '/Resources/nba-plan-line.png'
 jordan_plot_path = cwd + '/Resources/jordan-plot.html'
 with open(nba_plan_path, "rb") as image_file:
     encoded_string = base64.b64encode(image_file.read()).decode()
-# add the prefix that plotly will want when using the string as source
+# add the prefix that plot.ly will want when using the string as source
 encoded_image = "data:image/png;base64," + encoded_string
 
+
+print('0. initialize data.')
 x1 = []
 y1 = []
 d1 = []
@@ -33,10 +41,31 @@ x0 = []
 y0 = []
 d0 = []
 
-# 读取当前目录下所有csv文件
-csv_file_list = []
-root_dir = cwd  # sys.path work under windows
+missed_shot_trace = []
+made_shot_trace = []
 
+# 初始化各项积累数值
+MIN = 0
+PTS = 0
+FGM = 0
+FGA = 0
+PM3 = 0
+PA3 = 0
+FTM = 0
+FTA = 0
+REB = 0
+AST = 0
+STL = 0
+BLK = 0
+TOV = 0
+PLM = 0
+
+csv_file_list = []
+''' initialization ends. '''
+
+
+root_dir = cwd  # sys.path work under windows
+# 读取当前目录下所有csv文件
 '''
 for filename in os.listdir(root_dir):
     pathname = os.path.join(root_dir, filename)
@@ -50,11 +79,10 @@ for root, dirs, files in os.walk(root_dir):
         if os.path.splitext(file)[1] == '.csv':  
             csv_file_list.append(os.path.join(root, file))
 
+if debug:
+    print(csv_file_list)
+''' read file path part ends. '''
 
-print(csv_file_list)
-
-missed_shot_trace =[]
-made_shot_trace = []
 
 print('1. start to parse data.')
 for filename in csv_file_list:
@@ -66,19 +94,63 @@ for filename in csv_file_list:
     with open(filename, 'r', encoding='UTF-8') as csv_file:
         reader = csv.reader(csv_file)
         old_rows = [row for row in reader]
-    # print(year)
-    # print(old_rows[-1][0])
+    if debug:
+        print(year)
+        print(old_rows[-1][0])
     for row in old_rows:
         if len(row) < 3:
+            # calculate sum-up data
+            if row[0] == 'MIN':
+                MIN = MIN + float(row[1])
+                continue
+            if row[0] == 'PTS':
+                PTS = PTS + int(row[1])
+                continue
+            if row[0] == 'FGM':
+                FGM = FGM + int(row[1])
+                continue
+            if row[0] == 'FGA':
+                FGA = FGA + int(row[1])
+                continue
+            if row[0] == '3PM':
+                PM3 = PM3 + int(row[1])
+                continue
+            if row[0] == '3PA':
+                PA3 = PA3 + int(row[1])
+                continue
+            if row[0] == 'FTM':
+                FTM = FTM + int(row[1])
+                continue
+            if row[0] == 'FTA':
+                FTA = FTA + int(row[1])
+                continue
+            if row[0] == 'REB':
+                REB = REB + int(row[1])
+                continue
+            if row[0] == 'AST':
+                AST = AST + int(row[1])
+                continue
+            if row[0] == 'STL':
+                STL = STL + int(row[1])
+                continue
+            if row[0] == 'BLK':
+                BLK = BLK + int(row[1])
+                continue
+            if row[0] == 'TOV':
+                TOV = TOV + int(row[1])
+                continue
+            if row[0] == 'PLM':
+                PLM = PLM + int(row[1])
+                continue
             continue
+        # missed shots
         if row[1] == '0':
             # mid-court ring to rim = 12.72 meters
             if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
                 x0.append('%.2f' % -float(row[2]))  # to prettify the output
                 y0.append('%.2f' % -float(row[3]))
-                d0.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                    old_rows[-1][0])
+                d0.append('Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
+                          old_rows[-1][0])
             else:
                 x0.append('%.2f' % float(row[2]))  # to prettify the output
                 y0.append('%.2f' % float(row[3]))
@@ -86,16 +158,15 @@ for filename in csv_file_list:
                     'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
                     old_rows[-1][0])
 
-    for row in old_rows:
-        if len(row) < 3:
-            continue
+        # made shots
         if row[1] == '1':
             # mid-court ring to rim = 12.72 meters
             if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
                 x1.append('%.2f' % -float(row[2]))  # to prettify the output
                 y1.append('%.2f' % -float(row[3]))
-                d1.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
+                d1.append('Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
+                          old_rows[-1][0])
+
             else:
                 x1.append('%.2f' % float(row[2]))  # to prettify the output
                 y1.append('%.2f' % float(row[3]))
@@ -104,7 +175,7 @@ for filename in csv_file_list:
                     old_rows[-1][0])
 
 
-print('2. make the coords!')
+print('2. make the coordinates!')
 missed_shot_trace = go.Scatter(
     x=x0,
     y=y0,
@@ -143,6 +214,10 @@ made_shot_trace = go.Scatter(
 
 print('3. plot the figure!')
 data = [missed_shot_trace, made_shot_trace]
+sum_up = ['MIN', ('%.2f' % (MIN / 60)), 'PTS', PTS, 'FGM', FGM, 'FGA', FGA, '3PM', PM3, '3PA', PA3, 'FTM', FTM,
+          'FTA', FTA, 'REB', REB, 'AST', AST, 'STL', STL, 'BLK', BLK, 'TOV', TOV, 'PLM', PLM]
+
+title_text = 'Shots by Michael Jordan in NBA2K11 MyPlayer mode <br>' + str(sum_up)
 layout = go.Layout(
     images=[dict(
           source=encoded_image,
@@ -165,7 +240,7 @@ layout = go.Layout(
         range=[-800, 800],
         fixedrange=True,
                 ),
-    title='Shots by Michael Jordan in NBA2K11 MyPlayer mode',
+    title=title_text,
     hovermode='closest',
     showlegend=True,
     height=873,

@@ -9,8 +9,10 @@ Direct3DCreate9Type RealDirect3DCreate9 = NULL;
 #pragma comment(linker, "/EXPORT:Direct3DCreate9=MyDirect3DCreate9")
 #endif
 extern "C" void* WINAPI MyDirect3DCreate9(UINT SDKVersion) {
+	/*
 	if (VERBOSEMODE) {
 		MessageBox(NULL, _T("µ˜”√¡ÀDirect3DCreate9"), _T(""), MB_OK);
 	}
+	*/
 	return RealDirect3DCreate9(SDKVersion);
 }

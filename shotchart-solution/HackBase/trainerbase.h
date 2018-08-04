@@ -94,6 +94,10 @@ private:
 	std::string current_time;
 	csv::ofstream os;
 public:
+	// this two were added later 180803, bad design... TAT
+	std::wstring home;
+	std::wstring away;
+
 	void SaveDataFileInitandOpen();
 	void Get_Current_Time();
 	void SaveDataFileHeader();
@@ -113,7 +117,9 @@ public:
 		int stl,
 		int blk,
 		int tov,
-		int plm
+		int plm,
+		std::wstring home,
+		std::wstring away
 	);
 };
 
@@ -157,6 +163,5 @@ typedef void* (WINAPI* Direct3DCreate9Type)(UINT SDKVersion);
 extern Direct3DCreate9Type RealDirect3DCreate9;
 #include <SDKDDKVer.h>
 #include <tchar.h>
-
 
 #endif

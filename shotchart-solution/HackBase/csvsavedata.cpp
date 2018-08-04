@@ -47,6 +47,25 @@ void CreateFolder(const char * path) {
 }
 
 
+std::string wstringToString(const std::wstring& wstr)
+{
+	LPCWSTR pwszSrc = wstr.c_str();
+	int nLen = WideCharToMultiByte(CP_ACP, 0, pwszSrc, -1, NULL, 0, NULL, NULL);
+	if (nLen == 0)
+		return std::string("");
+
+	char* pszDst = new char[nLen];
+	if (!pszDst)
+		return std::string("");
+
+	WideCharToMultiByte(CP_ACP, 0, pwszSrc, -1, pszDst, nLen, NULL, NULL);
+	std::string str(pszDst);
+	delete[] pszDst;
+	pszDst = NULL;
+
+	return str;
+}
+
 void SaveData::SaveDataFileInitandOpen() {
 	if (this->os.is_open()) {
 		this->os.close();  // make sure last file is properly closed.
@@ -98,7 +117,9 @@ void SaveData::SaveDataFileFooter(
 	int stl,
 	int blk,
 	int tov,
-	int plm
+	int plm,
+	std::wstring home,
+	std::wstring away
 ) {
 	// csv::ofstream os(this->filename.c_str());	// append mode
 	// os.set_delimiter(',', "");
@@ -118,6 +139,12 @@ void SaveData::SaveDataFileFooter(
 		this->os << "TOV" << tov << NEWLINE;
 		this->os << "PLM" << plm << NEWLINE;
 		this->os << "---All data saved. Voila!---" << NEWLINE;
+		if (!home.empty()) {
+			this->os << wstringToString(home) + std::string(" vs ") + wstringToString(away) << NEWLINE;  // assume team name always ascii
+		}
+		else {
+			this->os << "Game fixture not knwon." << NEWLINE;
+		}
 		this->os.flush();  // flush at the end!
 		this->os.close();
 	}

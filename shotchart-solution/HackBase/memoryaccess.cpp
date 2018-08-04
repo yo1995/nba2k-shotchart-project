@@ -79,6 +79,54 @@ int acquire_PTS_ADDR(HANDLE pHandle) {
 	return i; // i = 24 fail, otherwise find offset factor
 }
 
+
+// we can either output a string vector or a single string containing team name.
+std::wstring acquire_home_team(HANDLE pHandle) {
+	DWORD ROSTER_OFFSET = 0x14;  // where the whole roster list lies
+	DWORD TEAM_NAME_OFFSET = 0xA0;  // where the team name lies
+
+	DWORD ptSUR = HOME_PG_SUR_ADDR + ROSTER_OFFSET;
+	DWORD SUR_ADDR = 0x0;
+	DWORD ROSTER_ADDR = 0x0;
+
+	// first, home team
+	ReadProcessMemory(pHandle, (LPVOID)ptSUR, &ROSTER_ADDR, sizeof(ROSTER_ADDR), 0);  // first read pointer to home pg surname
+	ROSTER_ADDR += TEAM_NAME_OFFSET;
+	wchar_t TEAM_NAME_BUF[64];
+	wchar_t TEAM_CITY_BUF[64];
+	DWORD ptString_temp = 0x0;
+
+	ReadProcessMemory(pHandle, (LPVOID)ROSTER_ADDR, &ptString_temp, sizeof(ptString_temp), 0);
+	ReadProcessMemory(pHandle, (LPVOID)ptString_temp, &TEAM_NAME_BUF, sizeof(TEAM_NAME_BUF), 0);  // third read pointer to roster team name
+	ReadProcessMemory(pHandle, (LPVOID)(ROSTER_ADDR + 0x8), &ptString_temp, sizeof(ptString_temp), 0);
+	ReadProcessMemory(pHandle, (LPVOID)ptString_temp, &TEAM_CITY_BUF, sizeof(TEAM_CITY_BUF), 0);  // third read pointer to roster team city
+	if (VERBOSEMODE) MessageBoxW(0, TEAM_NAME_BUF, L"see what home team we got", 0);
+	return std::wstring(TEAM_NAME_BUF);
+}
+
+std::wstring acquire_away_team(HANDLE pHandle) {
+	DWORD ROSTER_OFFSET = 0x14;  // where the whole roster list lies
+	DWORD TEAM_NAME_OFFSET = 0xA0;  // where the team name lies
+
+	DWORD ptSUR = HOME_PG_SUR_ADDR + ROSTER_OFFSET + 12 * PLAYERS_INFO_OFFSET;
+	DWORD SUR_ADDR = 0x0;
+	DWORD ROSTER_ADDR = 0x0;
+
+	// first, home team
+	ReadProcessMemory(pHandle, (LPVOID)ptSUR, &ROSTER_ADDR, sizeof(ROSTER_ADDR), 0);  // first read pointer to away pg surname,
+	ROSTER_ADDR = ROSTER_ADDR + TEAM_NAME_OFFSET;
+	wchar_t TEAM_NAME_BUF[64];
+	wchar_t TEAM_CITY_BUF[64];
+	DWORD ptString_temp = 0x0;
+
+	ReadProcessMemory(pHandle, (LPVOID)ROSTER_ADDR, &ptString_temp, sizeof(ptString_temp), 0);
+	ReadProcessMemory(pHandle, (LPVOID)ptString_temp, &TEAM_NAME_BUF, sizeof(TEAM_NAME_BUF), 0);  // third read pointer to roster team name
+	ReadProcessMemory(pHandle, (LPVOID)(ROSTER_ADDR + 0x8), &ptString_temp, sizeof(ptString_temp), 0);
+	ReadProcessMemory(pHandle, (LPVOID)ptString_temp, &TEAM_CITY_BUF, sizeof(TEAM_CITY_BUF), 0);  // third read pointer to roster team city
+	if (VERBOSEMODE) MessageBoxW(0, TEAM_NAME_BUF, L"see what away team we got", 0);
+	return std::wstring(TEAM_NAME_BUF);
+}
+
 void update_shot_coordinates(HANDLE pHandle) {
 	// update_shot_coordinates
 	ReadProcessMemory(pHandle, (LPVOID)coordinate_x_100_addr, &coordinate_x_100, sizeof(coordinate_x_100), 0);
@@ -141,6 +189,8 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 			if (!PTS_ADDR) {  // addr == 0
 				int index;
 				index = acquire_PTS_ADDR(pHandle);
+				mSaveData->home = acquire_home_team(pHandle);
+				mSaveData->away = acquire_away_team(pHandle);
 				if (index == 24) {  // looped through all the players
 					return;  // if mj mode addr not initialized, do not record.
 				}

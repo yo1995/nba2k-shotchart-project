@@ -13,6 +13,8 @@ See results in the following links
 
 [Plot for MyPlayer MJ](https://yo1995.github.io/nba2k-shotchart-project/jordan-plot.html)
 
+binary file in *release* section might be outdated sometimes. you could always retrieve latest version in TrainerRelease folder, or compile it yourself.
+
 ## Description
 
 This project aims to provide several interesting add-on features for NBA2K11 game.
@@ -95,6 +97,8 @@ The tool has multiple features, including:
 - 改进头文件结构，清理无用变量函数
 
 - 改进代码风格，整理各种杂乱的写法
+
+- 增加日期记录
 
 ## Keywords
 
@@ -289,3 +293,17 @@ C++的文件操作不如Python或者MATLAB那么方便。为了偷懒，使用�
 ### Misc
 
 几乎在我完成项目时才发现一个非常有用的[教程](https://blog.csdn.net/xfgryujk/article/category/5956585)。感叹要是早些看到的话也能少走点弯路，不过在走弯路过程中也收获颇丰。
+
+## 180803更新
+
+### 日期记录
+
+每次打完比赛后需要手动记录对阵极为不优雅，于是走上了寻找对阵和日期的道路。
+
+最先想到的方法当然还是搜索字符串。幸运的是，通过搜索timberwolves这个长关键字，我成功定位了几个读取该字符串的函数。然而，这些函数似乎和游戏进程关系不大。
+
+其次想到的方法是映射球队ID。[得到了](./Progress_notes/teamIDs.txt)nba2k11的球队ID表，甚至成功找到了快速游戏和练习模式等不依赖于其他赛前状态的模式中，对阵ID的地址。然而，在MP和王朝模式中，由于引入了日历这一概念，我发现这些地址只在读取游戏存档后第一次保持更新，之后便不再改变；同时，在季后赛模式中读取的数值并不对应球队ID，只得作罢。
+
+然后想到能否另辟蹊径，通过比赛日期找到比赛对阵ID？结果发现，球员dashboard中NBA Today和Schedule选项卡确实是依赖时间的，每次载入都会读取（游戏中）当前日期。然而，比赛本身似乎更依赖场次数。或许存档文件中存在日期与比赛ID的映射？
+
+感到失落之际，想到球员本身应该是依赖球队ID的，这样才能成功将主客队各自12名出场球员成功从名单中找出。于是在球员结构体附近转来转去，终于还是找到了球队名称字段。Voila！写入数据文件。

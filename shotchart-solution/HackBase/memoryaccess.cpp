@@ -32,6 +32,14 @@ DWORD FTA_ADDR1 = 0x0;
 DWORD FGA_ADDR1 = 0x0;
 DWORD PA3_ADDR1 = 0x0;
 
+// 180808 change score type method
+DWORD FTM_ADDR1 = 0x0;
+DWORD FGM_ADDR1 = 0x0;
+DWORD PM3_ADDR1 = 0x0;
+int FGM_1 = 0;
+int FTM_1 = 0;
+int PM3_1 = 0;
+
 DWORD HOME_PG_BASE_ADDR = 0x05c2e14f;
 DWORD PTS_OFFSET = 0x19;
 DWORD PLAYER_OFFSET = 0x43C;
@@ -44,6 +52,12 @@ void update_attempts_addresses() {
 	FTA_ADDR1 = PTS_ADDR + 0x8;
 	FGA_ADDR1 = PTS_ADDR + 0x10;
 	PA3_ADDR1 = PTS_ADDR + 0x18;
+}
+
+void update_made_addresses() {
+	FTM_ADDR1 = PTS_ADDR + 0x4;
+	FGM_ADDR1 = PTS_ADDR + 0xC;
+	PM3_ADDR1 = PTS_ADDR + 0x14;
 }
 
 bool if_game_started(HANDLE pHandle) {
@@ -140,11 +154,25 @@ void update_shot_triggered_time(HANDLE pHandle) {
 }
 
 void update_score_type(HANDLE pHandle) {
-	// update_score_type
 	ReadProcessMemory(pHandle, (LPVOID)score_type_addr, &score_type, sizeof(score_type), 0);
+}
+
+void update_score_judge_2(HANDLE pHandle) {
+	// 180808 after some testing I found this addr is not fully reliable
+	// corner case occurs in cases like shot blocked after foul, goaltending, off. intf., etc.
+	// hence I switch to read FGM 3PM FTM.
 	ReadProcessMemory(pHandle, (LPVOID)score_judge_addr, &score_judge, sizeof(score_judge), 0);
 }
 
+void update_score_judge_1(HANDLE pHandle) {
+	int FGM_temp = FGM_1;
+	int FTM_temp = FTM_1;
+	int PM3_temp = PM3_1;
+	ReadProcessMemory(pHandle, (LPVOID)FGM_ADDR1, &FGM_1, sizeof(FGM_1), 0);
+	ReadProcessMemory(pHandle, (LPVOID)FTM_ADDR1, &FTM_1, sizeof(FTM_1), 0);
+	ReadProcessMemory(pHandle, (LPVOID)PM3_ADDR1, &PM3_1, sizeof(PM3_1), 0);
+	((FGM_temp != FGM_1) || (FTM_temp != FTM_1) || (PM3_temp != PM3_1)) ? score_judge = 1: score_judge = 0;
+}
 
 void update_projected_percent(HANDLE pHandle) {
 	// move to above function to improve performance
@@ -172,7 +200,8 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 					// then myself triggered a shot. update the x-ys
 					// alley-oops are ignored due to my noobieness. :-<
 					if (record_shot_chart_and_more) {
-						update_score_type(pHandle);  // update multiple in 1 func to save time
+						update_score_type(pHandle);  
+						update_score_judge_2(pHandle);
 						mSaveData->SaveDataFileLines();  // only record when toggled to true
 					}
 					redraw_shotchart = true;	// serve as a lock to control the read from vector
@@ -197,6 +226,7 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 				else {
 					PTS_ADDR = HOME_PG_BASE_ADDR + PTS_OFFSET + index * PLAYER_OFFSET;
 					update_attempts_addresses();
+					update_made_addresses();
 					return;
 				}
 			}
@@ -210,6 +240,7 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 				// read the points scored out and print it to see if addresses are correct.
 				ReadProcessMemory(pHandle, (LPVOID)PTS_ADDR, &PTS, sizeof(PTS), 0);
 				update_score_type(pHandle);  // update again to ensure status are correct
+				update_score_judge_1(pHandle);
 				if (fgatemp != fga_global) {
 					pts_type = 2;
 					redraw_shotchart = true;

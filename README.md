@@ -100,6 +100,8 @@ The tool has multiple features, including:
 
 - 增加日期记录
 
+- 研究为什么弹出通知中心时会在Windows菜单中新建快捷方式 =_=||
+
 ## Keywords
 
 tool | D3D Hook | Trainer | NBA2K | nba2k11 | mod | visualization | 

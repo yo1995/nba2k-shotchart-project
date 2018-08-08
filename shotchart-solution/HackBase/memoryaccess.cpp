@@ -171,7 +171,7 @@ void update_score_judge_1(HANDLE pHandle) {
 	ReadProcessMemory(pHandle, (LPVOID)FGM_ADDR1, &FGM_1, sizeof(FGM_1), 0);
 	ReadProcessMemory(pHandle, (LPVOID)FTM_ADDR1, &FTM_1, sizeof(FTM_1), 0);
 	ReadProcessMemory(pHandle, (LPVOID)PM3_ADDR1, &PM3_1, sizeof(PM3_1), 0);
-	((FGM_temp != FGM_1) || (FTM_temp != FTM_1) || (PM3_temp != PM3_1)) ? score_judge = 1: score_judge = 0;
+	((FGM_temp != FGM_1) || (FTM_temp != FTM_1) || (PM3_temp != PM3_1)) ? score_judge_jordan = 1: score_judge_jordan = 0;
 }
 
 void update_projected_percent(HANDLE pHandle) {
@@ -186,6 +186,7 @@ void update_projected_percent(HANDLE pHandle) {
 void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 	if (if_game_started(pHandle)) {  // game started
 		update_score_type(pHandle);
+		update_score_judge_2(pHandle);  // in game display
 		update_projected_percent(pHandle);
 
 		float shot_time_temp = shot_triggered_time;
@@ -240,6 +241,7 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 				// read the points scored out and print it to see if addresses are correct.
 				ReadProcessMemory(pHandle, (LPVOID)PTS_ADDR, &PTS, sizeof(PTS), 0);
 				update_score_type(pHandle);  // update again to ensure status are correct
+				update_score_judge_2(pHandle);
 				update_score_judge_1(pHandle);
 				if (fgatemp != fga_global) {
 					pts_type = 2;

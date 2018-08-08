@@ -25,6 +25,7 @@ extern bool all_players_god_mode;
 // to decide the genre of ball into the rim.
 extern int score_type;
 extern int score_judge;
+extern int score_judge_jordan;
 extern char* score_type_text;
 extern char* score_judge_text;
 extern char score_type_0[];

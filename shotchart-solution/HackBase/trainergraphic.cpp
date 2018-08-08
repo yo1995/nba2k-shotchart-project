@@ -13,6 +13,7 @@ DWORD PTS_ADDR = 0x0;  // initialize the address before assignment
 // char* score_type_text;
 int score_type = 0;
 int score_judge = 0;
+int score_judge_jordan = 0;
 char* score_type_text = NULL;
 char* score_judge_text = NULL;
 char score_type_0[] = "airball";

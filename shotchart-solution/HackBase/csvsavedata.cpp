@@ -172,8 +172,18 @@ void SaveData::SaveDataFileLines() {
 			this->os << PerShotData0.score_type_s << PerShotData0.score_judge_s << PerShotData0.coordinate_x_100_s << PerShotData0.coordinate_y_100_s << PerShotData0.absolute_dist_rim_s << PerShotData0.type_s << NEWLINE;
 		}
 		else {
-			PerShotData PerShotData0(score_type, score_judge, coordinate_x_100, coordinate_y_100, rim_dist, pts_type);
-			this->os << PerShotData0.score_type_s << PerShotData0.score_judge_s << PerShotData0.coordinate_x_100_s << PerShotData0.coordinate_y_100_s << PerShotData0.absolute_dist_rim_s << PerShotData0.type_s << NEWLINE;
+			if (record_mode == 1) {
+				PerShotData PerShotData0(score_type, score_judge_jordan, coordinate_x_100, coordinate_y_100, rim_dist, pts_type);  // changed from score_judge to score_judge_jordan
+				this->os << PerShotData0.score_type_s << PerShotData0.score_judge_s << PerShotData0.coordinate_x_100_s << PerShotData0.coordinate_y_100_s << PerShotData0.absolute_dist_rim_s << PerShotData0.type_s << NEWLINE;
+			}
+			else if (record_mode == 2) {
+				PerShotData PerShotData0(score_type, score_judge, coordinate_x_100, coordinate_y_100, rim_dist, pts_type);
+				this->os << PerShotData0.score_type_s << PerShotData0.score_judge_s << PerShotData0.coordinate_x_100_s << PerShotData0.coordinate_y_100_s << PerShotData0.absolute_dist_rim_s << PerShotData0.type_s << NEWLINE;
+			}
+			else {
+				PerShotData PerShotData0(score_type, score_judge, coordinate_x_100, coordinate_y_100, rim_dist, pts_type);  // default case use score judge
+				this->os << PerShotData0.score_type_s << PerShotData0.score_judge_s << PerShotData0.coordinate_x_100_s << PerShotData0.coordinate_y_100_s << PerShotData0.absolute_dist_rim_s << PerShotData0.type_s << NEWLINE;
+			}
 		}
 	}
 	os.flush();

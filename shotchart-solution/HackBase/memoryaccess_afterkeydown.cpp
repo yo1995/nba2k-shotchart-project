@@ -110,7 +110,7 @@ void UpdateDMA_afterKeyDown(HANDLE pHandle_r, HANDLE pHandle_w, SaveData *mSaveD
 			int tov = 0;
 			int plm = 0;
 			if (record_mode == 2) {  // for shootaround mode only record 0 data
-				mSaveData->SaveDataFileFooter(min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm, NULL, NULL);
+				mSaveData->SaveDataFileFooter(min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm, mSaveData->home, mSaveData->away);
 			}
 			if (record_mode == 1) {
 				read_end_of_game_data(pHandle_r, min, pts, fga, fgm, pa3, pm3, fta, ftm, freb, breb, ast, stl, blk, tov, plm);

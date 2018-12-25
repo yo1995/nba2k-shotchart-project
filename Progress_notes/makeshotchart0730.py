@@ -4,8 +4,9 @@ import csv
 import os
 import re
 import plotly.graph_objs as go
-from plotly.offline import plot  # , init_notebook_mode
+from plotly.offline import init_notebook_mode, plot
 import base64
+import time
 import sys
 
 # import plotly
@@ -32,16 +33,6 @@ encoded_image = "data:image/png;base64," + encoded_string
 
 
 print('0. initialize data.')
-
-x3 = []
-y3 = []
-d3 = []
-
-x2 = []
-y2 = []
-d2 = []
-
-
 x1 = []
 y1 = []
 d1 = []
@@ -170,55 +161,19 @@ for filename in csv_file_list:
         # made shots
         if row[1] == '1':
             # mid-court ring to rim = 12.72 meters
-            if int(row[5]) > 2:  # 3-pointers
-                if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
-                    x3.append('%.2f' % -float(row[2]))  # to prettify the output
-                    y3.append('%.2f' % -float(row[3]))
-                    d3.append('Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                              old_rows[-1][0])
+            if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
+                x1.append('%.2f' % -float(row[2]))  # to prettify the output
+                y1.append('%.2f' % -float(row[3]))
+                d1.append('Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
+                          old_rows[-1][0])
 
-                else:
-                    x3.append('%.2f' % float(row[2]))  # to prettify the output
-                    y3.append('%.2f' % float(row[3]))
-                    d3.append(
-                        'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                        old_rows[-1][0])
-            if 1 < int(row[5]) < 3:  # 2-pointers
-                if float(row[4]) < 1272 and float(
-                        row[2]) < 0:  # flip court each quarter, but
-                    x2.append('%.2f' % -float(row[2]))  # to prettify the output
-                    y2.append('%.2f' % -float(row[3]))
-                    d2.append('Distance: %.2f' % (float(
-                        row[4]) / 100) + 'm <br>' + year + '-' + str(
-                        int(year) + 1) + ' ' +
-                              old_rows[-1][0])
+            else:
+                x1.append('%.2f' % float(row[2]))  # to prettify the output
+                y1.append('%.2f' % float(row[3]))
+                d1.append(
+                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
+                    old_rows[-1][0])
 
-                else:
-                    x2.append('%.2f' % float(row[2]))  # to prettify the output
-                    y2.append('%.2f' % float(row[3]))
-                    d2.append(
-                        'Distance: %.2f' % (float(
-                            row[4]) / 100) + 'm <br>' + year + '-' + str(
-                            int(year) + 1) + ' ' +
-                        old_rows[-1][0])
-            if int(row[5]) < 2:  # FTs
-                if float(row[4]) < 1272 and float(
-                        row[2]) < 0:  # flip court each quarter, but
-                    x1.append('%.2f' % -float(row[2]))  # to prettify the output
-                    y1.append('%.2f' % -float(row[3]))
-                    d1.append('Distance: %.2f' % (float(
-                        row[4]) / 100) + 'm <br>' + year + '-' + str(
-                        int(year) + 1) + ' ' +
-                              old_rows[-1][0])
-
-                else:
-                    x1.append('%.2f' % float(row[2]))  # to prettify the output
-                    y1.append('%.2f' % float(row[3]))
-                    d1.append(
-                        'Distance: %.2f' % (float(
-                            row[4]) / 100) + 'm <br>' + year + '-' + str(
-                            int(year) + 1) + ' ' +
-                        old_rows[-1][0])
 
 print('2. make the coordinates!')
 missed_shot_trace = go.Scatter(
@@ -239,16 +194,16 @@ missed_shot_trace = go.Scatter(
     )
 )
 
-made_shot_trace1 = go.Scatter(
+made_shot_trace = go.Scatter(
     x=x1,
     y=y1,
     hovertext=d1,
     hoverinfo='text',
     mode='markers',
-    name='Made Free Throw',
+    name='Made Shot',
     marker=dict(
         size=8,
-        color='rgba(255, 255, 0, .8)',
+        color='rgba(0, 200, 100, .8)',
         line=dict(
             width=1,
             color='rgb(0, 0, 0, 1)'
@@ -256,42 +211,9 @@ made_shot_trace1 = go.Scatter(
     )
 )
 
-made_shot_trace2 = go.Scatter(
-    x=x2,
-    y=y2,
-    hovertext=d2,
-    hoverinfo='text',
-    mode='markers',
-    name='Made 2PTs Shot',
-    marker=dict(
-        size=8,
-        color='rgba(0, 150, 100, .8)',
-        line=dict(
-            width=1,
-            color='rgb(0, 0, 0, 1)'
-        )
-    )
-)
-
-made_shot_trace3 = go.Scatter(
-    x=x3,
-    y=y3,
-    hovertext=d3,
-    hoverinfo='text',
-    mode='markers',
-    name='Made 3PTs Shot',
-    marker=dict(
-        size=8,
-        color='rgba(0, 255, 0, 1)',
-        line=dict(
-            width=1,
-            color='rgb(0, 0, 0, 1)'
-        )
-    )
-)
 
 print('3. plot the figure!')
-data = [missed_shot_trace, made_shot_trace1, made_shot_trace2, made_shot_trace3]
+data = [missed_shot_trace, made_shot_trace]
 sum_up = ['MIN', ('%.2f' % (MIN / 60)), 'PTS', PTS, 'FGM', FGM, 'FGA', FGA, '3PM', PM3, '3PA', PA3, 'FTM', FTM,
           'FTA', FTA, 'REB', REB, 'AST', AST, 'STL', STL, 'BLK', BLK, 'TOV', TOV, 'PLM', PLM]
 

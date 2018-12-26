@@ -158,14 +158,10 @@ for filename in csv_file_list:
             if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
                 x0.append('%.2f' % -float(row[2]))  # to prettify the output
                 y0.append('%.2f' % -float(row[3]))
-                d0.append('Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                          old_rows[-1][0])
             else:
                 x0.append('%.2f' % float(row[2]))  # to prettify the output
                 y0.append('%.2f' % float(row[3]))
-                d0.append(
-                    'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                    old_rows[-1][0])
+            d0.append('Missed<br>' + 'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
 
         # made shots
         if row[1] == '1':
@@ -174,51 +170,40 @@ for filename in csv_file_list:
                 if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
                     x3.append('%.2f' % -float(row[2]))  # to prettify the output
                     y3.append('%.2f' % -float(row[3]))
-                    d3.append('Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                              old_rows[-1][0])
-
                 else:
                     x3.append('%.2f' % float(row[2]))  # to prettify the output
                     y3.append('%.2f' % float(row[3]))
-                    d3.append(
-                        'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' +
-                        old_rows[-1][0])
+                d3.append('3PT<br>' + 'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
             if 1 < int(row[5]) < 3:  # 2-pointers
                 if float(row[4]) < 1272 and float(
                         row[2]) < 0:  # flip court each quarter, but
                     x2.append('%.2f' % -float(row[2]))  # to prettify the output
                     y2.append('%.2f' % -float(row[3]))
-                    d2.append('Distance: %.2f' % (float(
-                        row[4]) / 100) + 'm <br>' + year + '-' + str(
-                        int(year) + 1) + ' ' +
-                              old_rows[-1][0])
-
                 else:
                     x2.append('%.2f' % float(row[2]))  # to prettify the output
                     y2.append('%.2f' % float(row[3]))
-                    d2.append(
-                        'Distance: %.2f' % (float(
+                if float(row[4]) < 1:  # dunk
+                    d2.append('Dunk<br>' + 'Distance: %.2f' % (float(
+                        row[4]) / 100) + 'm <br>' + year + '-' + str(
+                        int(year) + 1) + ' ' +
+                              old_rows[-1][0])
+                else:
+                    d2.append('2PT<br>' + 'Distance: %.2f' % (float(
                             row[4]) / 100) + 'm <br>' + year + '-' + str(
                             int(year) + 1) + ' ' +
                         old_rows[-1][0])
+
             if int(row[5]) < 2:  # FTs
                 if float(row[4]) < 1272 and float(
                         row[2]) < 0:  # flip court each quarter, but
                     x1.append('%.2f' % -float(row[2]))  # to prettify the output
                     y1.append('%.2f' % -float(row[3]))
-                    d1.append('Distance: %.2f' % (float(
-                        row[4]) / 100) + 'm <br>' + year + '-' + str(
-                        int(year) + 1) + ' ' +
-                              old_rows[-1][0])
 
                 else:
                     x1.append('%.2f' % float(row[2]))  # to prettify the output
                     y1.append('%.2f' % float(row[3]))
-                    d1.append(
-                        'Distance: %.2f' % (float(
-                            row[4]) / 100) + 'm <br>' + year + '-' + str(
-                            int(year) + 1) + ' ' +
-                        old_rows[-1][0])
+                d1.append('FT<br>' + 'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
+
 
 print('2. make the coordinates!')
 missed_shot_trace = go.Scatter(
@@ -291,11 +276,18 @@ made_shot_trace3 = go.Scatter(
 )
 
 print('3. plot the figure!')
-data = [missed_shot_trace, made_shot_trace1, made_shot_trace2, made_shot_trace3]
-sum_up = ['MIN', ('%.2f' % (MIN / 60)), 'PTS', PTS, 'FGM', FGM, 'FGA', FGA, '3PM', PM3, '3PA', PA3, 'FTM', FTM,
-          'FTA', FTA, 'REB', REB, 'AST', AST, 'STL', STL, 'BLK', BLK, 'TOV', TOV, 'PLM', PLM]
+data = [missed_shot_trace, made_shot_trace2, made_shot_trace3, made_shot_trace1]
+# sum_up = ['MIN', ('%.2f' % (MIN / 60)), 'PTS', PTS, 'FGM', FGM, 'FGA', FGA, '3PM', PM3, '3PA', PA3, 'FTM', FTM, 'FTA', FTA, 'REB', REB, 'AST', AST, 'STL', STL, 'BLK', BLK, 'TOV', TOV, 'PLM', PLM]
 
-title_text = 'Shots by Michael Jordan in NBA2K11 MyPlayer mode <br>' + str(sum_up)
+sum_text = ''
+sum_text_l1 = ['MIN', 'PTS', 'FGM', 'FGA', '3PM', '3PA', 'FTM', 'FTA', 'REB', 'AST', 'STL', 'BLK', 'TOV', 'PLM']
+sum_text_l2 = [('%.2f' % (MIN / 60)), PTS, FGM, FGA, PM3, PA3, FTM, FTA, REB, AST, STL, BLK, TOV, PLM]
+for i in range(len(sum_text_l1)):
+    sum_text += '|<b>' + sum_text_l1[i] + '</b>'
+    sum_text += '|' + str(sum_text_l2[i])
+
+
+title_text = 'Shots by Michael Jordan in NBA2K11 MyPlayer mode <br>' + str(sum_text)
 layout = go.Layout(
     images=[dict(
           source=encoded_image,

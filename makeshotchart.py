@@ -155,11 +155,11 @@ for filename in csv_file_list:
         # missed shots
         if row[1] == '0':
             # mid-court ring to rim = 12.72 meters
-            if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
-                x0.append('%.2f' % -float(row[2]))  # to prettify the output
+            if (float(row[4]) < 1272 and float(row[2]) < 0) or (float(row[4]) > 1272 and float(row[2]) > 0):  # flip court each quarter, 4 conditions
+                x0.append('%.2f' % -float(row[2]))
                 y0.append('%.2f' % -float(row[3]))
             else:
-                x0.append('%.2f' % float(row[2]))  # to prettify the output
+                x0.append('%.2f' % float(row[2]))
                 y0.append('%.2f' % float(row[3]))
             d0.append('Missed<br>' + 'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
 
@@ -167,16 +167,15 @@ for filename in csv_file_list:
         if row[1] == '1':
             # mid-court ring to rim = 12.72 meters
             if int(row[5]) > 2:  # 3-pointers
-                if float(row[4]) < 1272 and float(row[2]) < 0:  # flip court each quarter, but
-                    x3.append('%.2f' % -float(row[2]))  # to prettify the output
+                if (float(row[4]) < 1272 and float(row[2]) < 0) or (float(row[4]) > 1272 and float(row[2]) > 0):
+                    x3.append('%.2f' % -float(row[2]))
                     y3.append('%.2f' % -float(row[3]))
                 else:
-                    x3.append('%.2f' % float(row[2]))  # to prettify the output
+                    x3.append('%.2f' % float(row[2]))
                     y3.append('%.2f' % float(row[3]))
                 d3.append('3PT<br>' + 'Distance: %.2f' % (float(row[4]) / 100) + 'm <br>' + year + '-' + str(int(year) + 1) + ' ' + old_rows[-1][0])
             if 1 < int(row[5]) < 3:  # 2-pointers
-                if float(row[4]) < 1272 and float(
-                        row[2]) < 0:  # flip court each quarter, but
+                if (float(row[4]) < 1272 and float(row[2]) < 0) or (float(row[4]) > 1272 and float(row[2]) > 0):
                     x2.append('%.2f' % -float(row[2]))  # to prettify the output
                     y2.append('%.2f' % -float(row[3]))
                 else:
@@ -194,8 +193,8 @@ for filename in csv_file_list:
                         old_rows[-1][0])
 
             if int(row[5]) < 2:  # FTs
-                if float(row[4]) < 1272 and float(
-                        row[2]) < 0:  # flip court each quarter, but
+                if (float(row[4]) < 1272 and float(row[2]) < 0) or (
+                        float(row[4]) > 1272 and float(row[2]) > 0):
                     x1.append('%.2f' % -float(row[2]))  # to prettify the output
                     y1.append('%.2f' % -float(row[3]))
 

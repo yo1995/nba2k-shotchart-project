@@ -52,6 +52,16 @@ The tool has multiple features, including:
 
 - more to see in commit log and release log. many thing improved!
 
+### 20190202
+
+解决了全明星赛的寻址问题。由于这学期时间紧张，打游戏的进度基本和赛季进程相当，直到现在才发现这个问题。具体参见issue #3
+
+主要原因是全明星赛新秀赛每队只有10人，而常规比赛固定12人不变。这就造成了球员数据结构体和球员名单结构体的序号错位。
+
+解决方法直接读取球员数据结构体中指向名单的指针，从而确保球员对应的球队和姓名信息时准确的。
+
+在解决这个问题的过程中还发现当前的球队判别机制有问题——无法识别全明星赛和其他混合球员的比赛。当前会将全明星名单中的控卫所在球队当做对阵双方。
+
 ## Usage
 
 0. make sure the DirectX libraries are properly configured in your system.
@@ -98,9 +108,13 @@ The tool has multiple features, including:
 
 - 改进代码风格，整理各种杂乱的写法
 
-- 增加日期记录
+- 增加真实/比赛日期记录
 
 - 研究为什么弹出通知中心时会在Windows菜单中新建快捷方式 =_=||
+
+- 当前会将全明星名单中的控卫所在球队当做对阵双方
+
+- 当前启用回放模式时会造成卡顿
 
 ## Keywords
 

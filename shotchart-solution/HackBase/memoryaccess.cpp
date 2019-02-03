@@ -41,12 +41,14 @@ int FTM_1 = 0;
 int PM3_1 = 0;
 
 DWORD HOME_PG_BASE_ADDR = 0x05c2e14f;
+DWORD NAME_STRUCT_OFFSET = 0x11;
 DWORD PTS_OFFSET = 0x19;
 DWORD PLAYER_OFFSET = 0x43C;
 
 DWORD HOME_PG_SUR_ADDR = 0x5e4a528;
-DWORD HOME_PG_FIR_ADDR = 0x5e4a52c;
+DWORD HOME_PG_FIR_ADDR = 0x5e4a52c;  // 4bytes for last name(SUR) pointer
 DWORD PLAYERS_INFO_OFFSET = 0xB58;  // pg sg sf pf c
+DWORD DIFF_FIR_SUR_ADDR = 0x4;  // 4bytes between pointers
 
 void update_attempts_addresses() {
 	FTA_ADDR1 = PTS_ADDR + 0x8;
@@ -68,6 +70,7 @@ bool if_game_started(HANDLE pHandle) {
 
 int acquire_PTS_ADDR(HANDLE pHandle) {
 	int i = 0;
+	DWORD ptSTAT_ADDR = 0x0;
 	DWORD ptSUR_ADDR = 0x0;  // the addr of pointer that points to 
 	DWORD ptFIR_ADDR = 0x0;
 	DWORD SUR_ADDR = 0x0;
@@ -75,22 +78,37 @@ int acquire_PTS_ADDR(HANDLE pHandle) {
 	wchar_t SUR[7] = L"Jordan";  // Jordan in unicode string
 	wchar_t FIR[8] = L"Michael";  // Michael
 	while(i < 24) {
-		ptSUR_ADDR = HOME_PG_SUR_ADDR + i * PLAYERS_INFO_OFFSET;
-		ptFIR_ADDR = HOME_PG_FIR_ADDR + i * PLAYERS_INFO_OFFSET;
+		// first, loop through all the player stat entries
+		
+		ptSTAT_ADDR = HOME_PG_BASE_ADDR + i * PLAYER_OFFSET;
+		ptSTAT_ADDR += NAME_STRUCT_OFFSET;  // offset pointer to 0x11 of STAT STRUCT
+		ReadProcessMemory(pHandle, (LPVOID)ptSTAT_ADDR, &ptSUR_ADDR, sizeof(ptSUR_ADDR), 0);
+		ptFIR_ADDR = DIFF_FIR_SUR_ADDR + ptSUR_ADDR;
+
+
+		// ptSUR_ADDR = HOME_PG_SUR_ADDR + i * PLAYERS_INFO_OFFSET;
+		// ptFIR_ADDR = HOME_PG_FIR_ADDR + i * PLAYERS_INFO_OFFSET;
+
+		// second, read player name from both addresses
+
 		ReadProcessMemory(pHandle, (LPVOID)ptSUR_ADDR, &SUR_ADDR, sizeof(SUR_ADDR), 0);
 		ReadProcessMemory(pHandle, (LPVOID)ptFIR_ADDR, &FIR_ADDR, sizeof(FIR_ADDR), 0);
 		wchar_t SUR_BUF[64];  // unicode string, make bigger space to avoid overflow
 		wchar_t FIR_BUF[64];  //
 		ReadProcessMemory(pHandle, (LPVOID)SUR_ADDR, &SUR_BUF, sizeof(SUR_BUF), 0);
 		ReadProcessMemory(pHandle, (LPVOID)FIR_ADDR, &FIR_BUF, sizeof(FIR_BUF), 0);
+
+		// third, if name is michael jordan, break and set PTS_ADDR
 		if (VERBOSEMODE) MessageBoxW(0, SUR_BUF, L"see what surname we got", 0);
 		if ((wcsncmp(SUR, SUR_BUF, 7) == 0) && (wcsncmp(FIR, FIR_BUF, 8) == 0)) {
 			if (VERBOSEMODE) MessageBox(0, "haha we caught Jordan!", "nana...", 0);
-			break;
+			PTS_ADDR = HOME_PG_BASE_ADDR + PTS_OFFSET + i * PLAYER_OFFSET;
+			return true;
 		}
 		++i;
 	}
-	return i; // i = 24 fail, otherwise find offset factor
+	// return i;  // i = 24 fail, otherwise find offset factor
+	return false;  // if not break in the loop, then failed.
 }
 
 
@@ -217,15 +235,16 @@ void UpdateDMAs(HANDLE pHandle, SaveData *mSaveData) {
 
 		if (record_mode == 1 && record_shot_chart_and_more) {  // mj mp mode
 			if (!PTS_ADDR) {  // addr == 0
-				int index;
-				index = acquire_PTS_ADDR(pHandle);
+				bool success_flag;
+				success_flag = acquire_PTS_ADDR(pHandle);
 				mSaveData->home = acquire_home_team(pHandle);
 				mSaveData->away = acquire_away_team(pHandle);
-				if (index == 24) {  // looped through all the players
+				if (!success_flag) {  // looped through all the players and cannot find jordan
+					MessageBoxW(0, L"MP addr not found error.", L"Error!", 0);
 					return;  // if mj mode addr not initialized, do not record.
 				}
 				else {
-					PTS_ADDR = HOME_PG_BASE_ADDR + PTS_OFFSET + index * PLAYER_OFFSET;
+					// PTS_ADDR = HOME_PG_BASE_ADDR + PTS_OFFSET + index * PLAYER_OFFSET;
 					update_attempts_addresses();
 					update_made_addresses();
 					return;

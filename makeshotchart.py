@@ -83,8 +83,10 @@ for filename in os.listdir(root_dir):
 '''
 
 # 递归所有csv文件
-for root, dirs, files in os.walk(root_dir):  
-    for file in files:  
+for root, dirs, files in os.walk(root_dir):
+    for file in files:
+        if 'special' in root:
+            continue
         if os.path.splitext(file)[1] == '.csv':  
             csv_file_list.append(os.path.join(root, file))
 

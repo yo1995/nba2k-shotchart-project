@@ -323,3 +323,8 @@ C++的文件操作不如Python或者MATLAB那么方便。为了偷懒，使用�
 然后想到能否另辟蹊径，通过比赛日期找到比赛对阵ID？结果发现，球员dashboard中NBA Today和Schedule选项卡确实是依赖时间的，每次载入都会读取（游戏中）当前日期。然而，比赛本身似乎更依赖场次数。或许存档文件中存在日期与比赛ID的映射？
 
 感到失落之际，想到球员本身应该是依赖球队ID的，这样才能成功将主客队各自12名出场球员成功从名单中找出。于是在球员结构体附近转来转去，终于还是找到了球队名称字段。Voila！写入数据文件。
+
+## 191220 Hardlink notes
+
+I've move the files to another volume, thus the original hardlink mechanism does not work anymore. I need to switch to shell copy solution instead.
+

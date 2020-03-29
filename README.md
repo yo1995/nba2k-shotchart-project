@@ -170,6 +170,8 @@ for ref to reset hooking. really well structured code for d3d9 hooking & hacking
 
 [博文](https://yo1995.github.io/coding/nba2k11-shotchart-project)
 
+Also inspired by https://github.com/datadesk/kobe-every-shot-ever
+
 ### DirectX Hook
 
 第一部分内容是如何在全屏游戏中绘制自定义图形。

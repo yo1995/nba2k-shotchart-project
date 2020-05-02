@@ -110,7 +110,7 @@ The tool has multiple features, including:
 
 - 增加真实/比赛日期记录
 
-- 研究为什么弹出通知中心时会在Windows菜单中新建快捷方式 =_=||
+- 研究为什么弹出通知中心时会在Windows菜单中新建快捷方式 =^=
 
 - 当前会将全明星名单中的控卫所在球队当做对阵双方
 
@@ -118,7 +118,7 @@ The tool has multiple features, including:
 
 ## Keywords
 
-tool | D3D Hook | Trainer | NBA2K | nba2k11 | mod | visualization | 
+tool | D3D Hook | Trainer | NBA2K | nba2k11 | mod | visualization | NBA2K 投篮热区
 
 ## Refs
 
